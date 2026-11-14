@@ -17,11 +17,11 @@ const inlineIcon = (name) => icon(name, { size: 18, inline: true });
 
 /**
  * The content of each view. A step is { title?, text } where text may contain HTML.
- * A step with a title gets a numbered circle. Views that are missing here
+ * A step with a title is shown in bold above its text. Views that are missing here
  * (Help, Settings) have no assistant box.
  *
  * Keep every step short: the box is exactly three lines high (see css/styles.css).
- * The Brainstorm - Prioritise - Act tagline is fixed markup in the box itself.
+ * The "Step-by-step guide" title is fixed markup in the box itself.
  */
 const STEPS = {
     focus: () => [
@@ -57,6 +57,13 @@ const stepIndex = {};
 const sections = () => document.querySelectorAll('.assistant-section');
 const getSteps = (view) => (STEPS[view] ? STEPS[view]() : []);
 
+/** A numbered button that jumps to a step; the current step is highlighted. */
+function stepButton(step, i, isCurrent) {
+    const label = `Step ${i + 1}: ${step.title}`;
+    return `<button type="button" class="assistant-step-btn${isCurrent ? ' active' : ''}" `
+        + `data-step="${i}" aria-label="${label}"${isCurrent ? ' aria-current="step"' : ''}>${i + 1}</button>`;
+}
+
 /**
  * Draw the current step into every assistant box.
  * @param {'left'|'right'|null} direction - Which side the step slides in from (null = no animation)
@@ -73,14 +80,13 @@ function render(direction = null) {
     sections().forEach(section => {
         const slide = section.querySelector('.assistant-slide');
         section.querySelector('.assistant-message').innerHTML = html;
-        section.querySelector('.assistant-step-circle').textContent = step.title ? String(index + 1) : '';
 
         // Hidden (not removed) on single-step views so the box keeps its height
         section.querySelector('.assistant-nav').style.visibility = hasSeveralSteps ? 'visible' : 'hidden';
         section.querySelector('.assistant-prev').disabled = index === 0;
         section.querySelector('.assistant-next').disabled = index === steps.length - 1;
-        section.querySelector('.assistant-dots').innerHTML = hasSeveralSteps
-            ? steps.map((_, i) => `<span class="assistant-dot${i === index ? ' active' : ''}"></span>`).join('')
+        section.querySelector('.assistant-steps').innerHTML = hasSeveralSteps
+            ? steps.map((step, i) => stepButton(step, i, i === index)).join('')
             : '';
 
         slide.classList.remove('slide-in-left', 'slide-in-right');
@@ -91,16 +97,18 @@ function render(direction = null) {
     });
 }
 
-/** Go one step forward (+1) or back (-1) in the current view. */
-function goToStep(delta) {
+/** Go to a step (clamped to the valid range) in the current view. */
+function goToStep(target) {
     const steps = getSteps(activeView);
     const current = stepIndex[activeView] || 0;
-    const target = Math.max(0, Math.min(steps.length - 1, current + delta));
-    if (target === current) return;
+    const next = Math.max(0, Math.min(steps.length - 1, target));
+    if (next === current) return;
 
-    stepIndex[activeView] = target;
-    render(delta > 0 ? 'right' : 'left');
+    stepIndex[activeView] = next;
+    render(next > current ? 'right' : 'left');
 }
+
+const currentStep = () => stepIndex[activeView] || 0;
 
 /** True unless the user has turned the assistant off. */
 export function isAssistantVisible() {
@@ -139,7 +147,12 @@ export function initAssistant() {
     document.querySelectorAll('.assistant-close').forEach(button =>
         button.addEventListener('click', () => setAssistantVisible(false)));
     document.querySelectorAll('.assistant-prev').forEach(button =>
-        button.addEventListener('click', () => goToStep(-1)));
+        button.addEventListener('click', () => goToStep(currentStep() - 1)));
     document.querySelectorAll('.assistant-next').forEach(button =>
-        button.addEventListener('click', () => goToStep(1)));
+        button.addEventListener('click', () => goToStep(currentStep() + 1)));
+    document.querySelectorAll('.assistant-steps').forEach(container =>
+        container.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-step]');
+            if (button) goToStep(Number(button.dataset.step));
+        }));
 }

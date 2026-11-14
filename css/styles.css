@@ -19,7 +19,8 @@
     --primary-teal: #66b2b2;        /* Active buttons - medium teal */
     --primary-teal-dark: #008080;   /* Active menu items - classic teal */
     --primary-teal-light: #99cccc;  /* Light accents */
-    --focus-teal: #e6f2f2;          /* Very light teal background */
+    --tone-guide: #e8f3f3;          /* Guide box - a faint tint so it reads as its own area */
+    --tone-focus: #cfe5e5;          /* Today's focus tasks - the strongest tint */
     --header-teal: #006666;         /* Header background - deep teal */
     --help-bg-teal: #b2d8d8;        /* Help section backgrounds */
 
@@ -36,7 +37,6 @@
     --backlog-purple: #8B5CF6;      /* Violet purple */
     --delete-red: #EF4444;          /* Modern red */
 
-    --assistant-accent: #9A3412;    /* Stands out on the help background */
     --nav-height: 70px;
 }
 
@@ -65,7 +65,8 @@ body.dark-mode {
     --primary-teal: #66b2b2;        /* Keep same for consistency */
     --primary-teal-dark: #008080;   /* Classic teal */
     --primary-teal-light: #99cccc;  /* Light teal */
-    --focus-teal: #003333;          /* Dark teal background */
+    --tone-guide: #1a3333;
+    --tone-focus: #123f3f;
     --header-teal: #004d4d;         /* Darker header for dark mode */
     --help-bg-teal: #336666;        /* Darker help backgrounds */
 
@@ -79,7 +80,6 @@ body.dark-mode {
     --archive-green: #34D399;
     --backlog-purple: #A78BFA;
     --delete-red: #F87171;
-    --assistant-accent: #FCD34D;
 }
 
 .app-container {
@@ -153,8 +153,15 @@ body.dark-mode {
 .app-header h1 {
     font-size: clamp(20px, 5vw, 28px);
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 2px;
     color: var(--text-on-teal);
+}
+
+/* Tagline under the title: quiet, same color family as the header */
+.app-tagline {
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    color: var(--primary-teal-light);
 }
 
 .header-subtitle {
@@ -174,7 +181,7 @@ body.dark-mode {
     flex-direction: column;
     gap: 4px;
     padding: 8px 16px 12px;
-    background: var(--help-bg-teal);
+    background: var(--tone-guide);
     border-bottom: 1px solid var(--border-light);
     position: sticky;
     top: 0;
@@ -192,7 +199,7 @@ body.dark-mode {
     height: 24px;
 }
 
-/* < ••• > centered under the tagline */
+/* < (1) (2) (3) > centered under the title */
 .assistant-nav {
     display: flex;
     align-items: center;
@@ -201,7 +208,7 @@ body.dark-mode {
     height: 24px;
 }
 
-/* Same width as the close button so the < ••• > group is truly centered */
+/* Same width as the close button so the < (1) (2) > group is truly centered */
 .assistant-top-spacer {
     width: 28px;
     flex-shrink: 0;
@@ -253,25 +260,34 @@ body.dark-mode .assistant-icon {
     stroke: currentColor;
 }
 
-/* Progress dots between the arrows and the close button */
-.assistant-dots {
+/* Numbered step buttons between the arrows; the current step is filled */
+.assistant-steps {
     display: flex;
     gap: 6px;
 }
 
-.assistant-dot {
-    width: 6px;
-    height: 6px;
+.assistant-step-btn {
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
-    background: var(--text-light);
-    opacity: 0.35;
-    transition: opacity 0.2s, transform 0.2s;
+    border: 1px solid var(--primary-teal-dark);
+    background: transparent;
+    color: var(--primary-teal-dark);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
 }
 
-.assistant-dot.active {
-    opacity: 1;
-    transform: scale(1.3);
+.assistant-step-btn:hover {
+    background: rgba(0, 128, 128, 0.15);
+}
+
+.assistant-step-btn.active {
     background: var(--primary-teal-dark);
+    color: var(--text-on-teal);
 }
 
 /* Fixed height: always exactly 3 lines so the box never resizes */
@@ -282,14 +298,15 @@ body.dark-mode .assistant-icon {
     line-height: 1.4;
 }
 
-/* Fixed tagline at the top of the box (not part of the sliding step) */
-.assistant-tagline {
+/* Fixed title at the top of the box (not part of the sliding step) */
+.assistant-title {
     flex: 1;
-    font-weight: 700;
-    font-size: 14px;
+    font-weight: 600;
+    font-size: 13px;
     text-align: center;
-    color: var(--assistant-accent);
-    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-light);
 }
 
 .assistant-slide {
@@ -299,34 +316,12 @@ body.dark-mode .assistant-icon {
     height: 100%;
 }
 
-.assistant-step-circle {
-    flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--primary-teal-dark);
-    color: var(--text-on-teal);
-    font-size: 13px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.assistant-step-circle:empty {
-    display: none;
-}
-
 .assistant-message {
     flex: 1;
     color: var(--text-dark);
 }
 
 /* Dark mode adjustments for assistant */
-body.dark-mode .assistant-section {
-    background: var(--help-bg-teal);
-}
-
 body.dark-mode .assistant-btn:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.1);
 }
@@ -466,8 +461,6 @@ body.dark-mode .modal::backdrop {
     display: flex;
     gap: 8px;
     padding: 0 16px;
-    background: var(--bg-white);
-    margin-bottom: 20px;
 }
 
 #taskInput {
@@ -539,19 +532,25 @@ body.dark-mode .modal::backdrop {
 /* The "Add new task" section sits directly under the assistant box */
 .task-section-input {
     padding-top: 0;
+    padding-bottom: 20px;
 }
 
 .focus-section {
-    background: var(--focus-teal);
+    background: var(--tone-focus);
 }
+
 
 .section-title {
     padding: 12px 16px;
     font-size: clamp(14px, 3.5vw, 17px);
     font-weight: 600;
-    color: var(--primary-teal-dark);
+    color: var(--header-teal);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+}
+
+body.dark-mode .section-title {
+    color: var(--primary-teal-light);
 }
 
 .section-title span {
@@ -568,8 +567,10 @@ body.dark-mode .modal::backdrop {
 }
 
 /* Task List */
+/* Lists and rows take the color of their section */
 .task-list {
     position: relative;
+    background: inherit;
 }
 
 .task-item {
@@ -577,24 +578,39 @@ body.dark-mode .modal::backdrop {
     display: flex;
     align-items: center;
     padding: 16px;
-    background: var(--bg-white);
+    background: inherit;
     touch-action: pan-y;
     transition: transform 0.3s ease, background 0.2s;
     user-select: none;
 }
 
 /* Priority number in the focus list (replaces the star) */
+/* A star with the priority number inside */
 .priority-badge {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--primary-teal-dark);
-    color: var(--text-on-teal);
-    font-weight: 700;
-    font-size: 14px;
+    position: relative;
+    width: 34px;
+    height: 34px;
+    color: var(--primary-teal-dark);
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.priority-badge svg {
+    width: 34px;
+    height: 34px;
+}
+
+/* The number sits on the star's centre, which is a little below the box centre */
+.priority-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-on-teal);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1;
 }
 
 .task-priority:hover {
@@ -619,12 +635,9 @@ body.dark-mode .modal::backdrop {
     opacity: 0.5;
 }
 
-.priority-badge-done {
-    /* Outlined = finished, filled = still to do */
-    background: transparent;
-    border: 1px solid var(--primary-teal-dark);
+/* Done: outlined star with a teal check mark */
+.priority-badge-done .priority-number {
     color: var(--primary-teal-dark);
-    box-sizing: border-box;
 }
 
 .task-priority:disabled {
@@ -683,10 +696,6 @@ body.dark-mode .modal::backdrop {
     height: 18px;
 }
 
-.focus-section .task-item {
-    background: var(--focus-teal);
-}
-
 .task-text {
     flex: 1;
     font-size: clamp(14px, 3.5vw, 17px);
@@ -736,6 +745,12 @@ body.dark-mode .modal::backdrop {
 .task-star svg {
     width: 24px;
     height: 24px;
+}
+
+/* The priority star is a little larger than the plain star, so it needs less offset */
+.task-priority {
+    margin-left: -8px;
+    margin-right: 0;
 }
 
 /* Edit Button - Specific Styles */
@@ -1109,8 +1124,7 @@ body.dark-mode .modal::backdrop {
     width: 100%;
     max-width: 100%;
     height: var(--nav-height);
-    background: var(--bg-white);
-    border-top: 1px solid var(--border-light);
+    background: var(--header-teal);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -1139,12 +1153,12 @@ body.dark-mode .modal::backdrop {
     justify-content: center;
     gap: 4px;
     cursor: pointer;
-    color: var(--text-light);
+    color: var(--primary-teal-light);
     transition: color 0.2s;
 }
 
 .nav-btn.active {
-    color: var(--primary-teal-dark);
+    color: var(--text-on-teal);
 }
 
 .nav-icon {

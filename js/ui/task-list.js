@@ -53,6 +53,17 @@ function renderList(containerId, tasks, emptyMessage, numbered) {
     });
 }
 
+/**
+ * A star with a number (or check mark) inside. It is the same star the user clicked
+ * to add the task to focus, so it is clear that clicking it again takes the task out.
+ * Done tasks get an outlined star: filled = still to do, outlined = finished.
+ */
+function priorityStar(content, { done = false } = {}) {
+    return `<span class="priority-badge${done ? ' priority-badge-done' : ''}" aria-hidden="true">`
+        + icon('star', { size: 34, strokeWidth: done ? 1.5 : 1, filled: !done })
+        + `<span class="priority-number">${content}</span></span>`;
+}
+
 /** The button at the left of a row: a priority number, a check mark or a star. */
 function createLeadingButton(task, priority) {
     const button = document.createElement('button');
@@ -69,7 +80,7 @@ function createLeadingButton(task, priority) {
         // Done focus task: outlined check, not clickable (use the check button on the right)
         button.classList.add('task-priority');
         button.disabled = true;
-        button.innerHTML = '<span class="priority-badge priority-badge-done" aria-hidden="true">✓</span>';
+        button.innerHTML = priorityStar('✓', { done: true });
         button.setAttribute('aria-label', 'Done');
     } else {
         // Open focus task: its priority number. Clicking removes it from focus.
@@ -77,7 +88,7 @@ function createLeadingButton(task, priority) {
         button.classList.add('task-priority');
         button.title = label;
         button.setAttribute('aria-label', label);
-        button.innerHTML = `<span class="priority-badge" aria-hidden="true">${priority}</span>`;
+        button.innerHTML = priorityStar(priority);
     }
 
     button.addEventListener('click', (e) => {
