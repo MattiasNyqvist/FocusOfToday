@@ -1,59 +1,51 @@
 /**
- * Focus Task Planner - Configuration
- * Contains app settings and constants
+ * Configuration
+ * App settings that the user can change, plus every localStorage key in one place.
  */
 
-// Default configuration
-export const CONFIG = {
-    // Max number of focused tasks per day
-    maxFocusTasks: 6,
-
-    // Auto-reset focus at midnight
-    autoResetFocus: false,
-
-    // Week starts on Monday (true) or Sunday (false)
-    weekStartsOnMonday: true,
-
-    // Storage key for localStorage
-    storageKey: 'focusTasks_v1',
-
-    // Settings storage key
-    settingsKey: 'focusSettings_v1',
-
-    // Archive storage key
-    archiveKey: 'focusArchive_v1',
-
-    // Backlog storage key
-    backlogKey: 'focusBacklog_v1'
+/** localStorage keys. Keep them here so nothing is stored under a "secret" name. */
+export const STORAGE_KEYS = {
+    tasks: 'focusTasks_v1',
+    backlog: 'focusBacklog_v1',
+    archive: 'focusArchive_v1',
+    settings: 'focusSettings_v1',
+    theme: 'theme',
+    assistantHidden: 'assistantHidden',
+    lastSeenDate: 'lastSeenDate'
 };
 
-// Load settings from localStorage
+/** Allowed range for the daily focus limit (matches the slider in Settings). */
+export const FOCUS_LIMIT_MIN = 1;
+export const FOCUS_LIMIT_MAX = 10;
+
+/** Settings the user can change. Saved with saveSettings(). */
+export const CONFIG = {
+    /** Max number of focus tasks per day */
+    maxFocusTasks: 6
+};
+
+/** Load saved settings into CONFIG. Invalid or missing values keep their defaults. */
 export function loadSettings() {
     try {
-        const saved = localStorage.getItem(CONFIG.settingsKey);
-        if (saved) {
-            const settings = JSON.parse(saved);
-            Object.assign(CONFIG, settings);
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings));
+        const limit = saved?.maxFocusTasks;
+        if (Number.isInteger(limit) && limit >= FOCUS_LIMIT_MIN && limit <= FOCUS_LIMIT_MAX) {
+            CONFIG.maxFocusTasks = limit;
         }
     } catch (error) {
-        console.error('Error loading settings:', error);
+        console.error('Could not load settings:', error);
     }
 }
 
-// Save settings to localStorage
+/** Save the current CONFIG. */
 export function saveSettings() {
     try {
-        const settings = {
-            maxFocusTasks: CONFIG.maxFocusTasks,
-            autoResetFocus: CONFIG.autoResetFocus,
-            showSwipeHints: CONFIG.showSwipeHints,
-            weekStartsOnMonday: CONFIG.weekStartsOnMonday
-        };
-        localStorage.setItem(CONFIG.settingsKey, JSON.stringify(settings));
+        localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify({
+            maxFocusTasks: CONFIG.maxFocusTasks
+        }));
     } catch (error) {
-        console.error('Error saving settings:', error);
+        console.error('Could not save settings:', error);
     }
 }
 
-// Initialize settings on load
 loadSettings();
