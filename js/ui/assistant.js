@@ -15,6 +15,9 @@ import { icon, numberedStar } from './icons.js';
 /** An icon sized to sit inside a sentence. */
 const inlineIcon = (name) => icon(name, { size: 18, inline: true });
 
+/** The six-dot drag handle, as it looks on the task rows. */
+const gripIcon = icon('grip', { size: 18, strokeWidth: 3, inline: true });
+
 /** The numbered star of the priority list, sized to sit inside a sentence. */
 const inlineStar = (number) => numberedStar(number, { size: 24, inline: true });
 
@@ -30,26 +33,30 @@ const STEPS = {
     focus: () => [
         {
             title: 'Brainstorm',
-            text: `Write down everything on your mind for today's to-dos. Click ${inlineIcon('disk')} to save each task.`
+            text: `Write down everything on your mind for today's to-dos. Click ${inlineIcon('plus')} to add each task.`
         },
         {
             title: 'Prioritise',
-            text: `Click ${inlineIcon('star')} on your top tasks (max ${CONFIG.maxFocusTasks}). <strong>Drag</strong> to order them, with ${inlineStar(1)} on top.`
+            text: `Click ${inlineIcon('star')} on your top tasks (max ${CONFIG.maxFocusTasks}). Drag ${gripIcon} to order them, with ${inlineStar(1)} on top.`
         },
         {
             title: 'Act',
-            text: `Start with ${inlineStar(1)}. Click ${inlineIcon('check')} when done (click again to undo). <strong>Swipe right</strong> for backlog.`
+            text: `Start with ${inlineStar(1)}. Click ${inlineIcon('check')} when done (click again to undo).`
         },
         {
             title: 'Tidy up',
-            text: `Click ${inlineIcon('pen')} to edit or ${inlineIcon('trash')} to delete. Unfinished focus tasks are reviewed each new day.`
+            text: `Not today? Click ${inlineIcon('box')} or <strong>swipe right</strong> to send a task to the backlog. ${inlineIcon('pen')} edits, ${inlineIcon('trash')} deletes.`
+        },
+        {
+            title: 'Next day',
+            text: 'Done tasks move to the Archive tomorrow. Unfinished focus tasks are reviewed then.'
         }
     ],
     backlog: () => [{
-        text: `Tasks for later. <strong>Swipe left</strong> to move one back to Today. Click ${inlineIcon('pen')} to edit or ${inlineIcon('trash')} to delete.`
+        text: `Tasks for later. Click ${inlineIcon('arrowLeft')} or <strong>swipe left</strong> to move one back to Today. Click ${inlineIcon('pen')} to edit or ${inlineIcon('trash')} to delete.`
     }],
     archive: () => [{
-        text: `Finished tasks arrive here the day after. <strong>Swipe left</strong> to move one back to Today. Click ${inlineIcon('pen')} to edit or ${inlineIcon('trash')} to delete.`
+        text: `Finished tasks arrive here the day after. Click ${inlineIcon('arrowLeft')} or <strong>swipe left</strong> to move one back to Today. ${inlineIcon('pen')} edits, ${inlineIcon('trash')} deletes.`
     }]
 };
 

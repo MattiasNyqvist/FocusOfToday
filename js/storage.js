@@ -16,7 +16,7 @@
  * }
  */
 
-import { CONFIG, STORAGE_KEYS } from './config.js';
+import { CONFIG, STORAGE_KEYS, FOCUS_LIMIT_MIN, FOCUS_LIMIT_MAX, MAX_TASK_LENGTH } from './config.js';
 
 /** The three task lists. */
 export const LIST = Object.freeze({
@@ -137,7 +137,7 @@ export function addTask(text) {
     const tasks = loadTasks();
     const task = {
         id: Date.now(),
-        text: text.trim(),
+        text: text.trim().slice(0, MAX_TASK_LENGTH),
         starred: false,
         status: 'active',
         createdAt: new Date().toISOString(),
@@ -207,7 +207,7 @@ export function moveFromArchiveToToday(id) {
 }
 
 // ============================================
-// Export
+// Export and import
 // ============================================
 
 /** All app data, ready to be saved as a JSON backup. */
@@ -220,4 +220,80 @@ export function exportData() {
         archive: loadArchive(),
         settings: { maxFocusTasks: CONFIG.maxFocusTasks }
     };
+}
+
+/**
+ * A backup may hold longer texts than the field allows (from an older version), so it is
+ * checked against a generous limit instead of MAX_TASK_LENGTH. Backups larger than
+ * MAX_BACKUP_BYTES are refused (a real backup is a few kilobytes).
+ */
+const MAX_IMPORTED_TEXT = 500;
+const MAX_BACKUP_BYTES = 5 * 1024 * 1024;
+
+/**
+ * Check that a value looks like a task and return a clean copy, or null if it does not.
+ * Unknown fields are dropped so a hand-edited file cannot add anything odd.
+ */
+function cleanTask(value) {
+    if (!value || typeof value !== 'object') return null;
+    if (!Number.isFinite(value.id) || typeof value.text !== 'string' || !value.text.trim()) return null;
+
+    const task = {
+        id: value.id,
+        text: value.text.trim().slice(0, MAX_IMPORTED_TEXT),
+        starred: value.starred === true,
+        status: value.status === 'done' ? 'done' : 'active',
+        createdAt: typeof value.createdAt === 'string' ? value.createdAt : new Date().toISOString(),
+        completedAt: typeof value.completedAt === 'string' ? value.completedAt : null
+    };
+    if (typeof value.movedToBacklogAt === 'string') task.movedToBacklogAt = value.movedToBacklogAt;
+    if (typeof value.archivedAt === 'string') task.archivedAt = value.archivedAt;
+    return task;
+}
+
+/** Clean a whole list. A missing list becomes empty; a list of the wrong kind is an error. */
+function cleanList(value, name) {
+    if (value === undefined) return [];
+    if (!Array.isArray(value)) throw new Error(`"${name}" is not a list.`);
+
+    const tasks = value.map(cleanTask);
+    if (tasks.includes(null)) throw new Error(`"${name}" contains an item that is not a valid task.`);
+    return tasks;
+}
+
+/**
+ * Read a backup file made by exportData().
+ * Nothing is saved here: the result is only what the file contains, checked and cleaned.
+ * @param {string} text - The file's content
+ * @returns {{tasks: Object[], backlog: Object[], archive: Object[], maxFocusTasks: number|null}}
+ * @throws {Error} With a message that can be shown to the user
+ */
+export function parseBackup(text) {
+    if (text.length > MAX_BACKUP_BYTES) throw new Error('The file is too large to be a backup.');
+
+    let data;
+    try {
+        data = JSON.parse(text);
+    } catch {
+        throw new Error('The file is not valid JSON.');
+    }
+    if (!data || typeof data !== 'object' || Array.isArray(data) || !Array.isArray(data.tasks)) {
+        throw new Error('The file is not a Focus of Today backup.');
+    }
+
+    const limit = data.settings?.maxFocusTasks;
+    return {
+        tasks: cleanList(data.tasks, 'tasks'),
+        backlog: cleanList(data.backlog, 'backlog'),
+        archive: cleanList(data.archive, 'archive'),
+        maxFocusTasks: Number.isInteger(limit) && limit >= FOCUS_LIMIT_MIN && limit <= FOCUS_LIMIT_MAX ? limit : null
+    };
+}
+
+/**
+ * Replace all task data with a backup from parseBackup().
+ * @returns {boolean} false if something could not be saved
+ */
+export function importData({ tasks, backlog, archive }) {
+    return saveList(LIST.TASKS, tasks) && saveList(LIST.BACKLOG, backlog) && saveList(LIST.ARCHIVE, archive);
 }

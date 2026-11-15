@@ -5,6 +5,7 @@
  */
 
 import { icon } from './icons.js';
+import { MAX_TASK_LENGTH } from '../config.js';
 import { editTaskText, deleteTask } from '../actions.js';
 
 /**
@@ -94,7 +95,7 @@ function startInlineEdit(list, task, textElement, editButton) {
     input.type = 'text';
     input.className = 'task-edit-input';
     input.value = originalText;
-    input.maxLength = 200;
+    input.maxLength = MAX_TASK_LENGTH;
     input.setAttribute('aria-label', 'Task text');
 
     textElement.style.display = 'none';

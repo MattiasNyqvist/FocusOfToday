@@ -22,29 +22,32 @@
 
             <!-- Task Input Section -->
             <section class="task-section task-section-input">
-                <h2 class="section-title">Add New Task</h2>
+                <h2 class="section-title section-title-with-count">
+                    Add New Task
+                    <span class="input-count" id="taskInputCount"></span>
+                </h2>
                 <div class="task-input-container">
                     <input
                         type="text"
                         id="taskInput"
                         aria-label="New task"
+                        aria-describedby="taskInputCount"
                         placeholder="Write a new task here..."
-                        maxlength="200"
                         autocomplete="off"
                         data-lpignore="true"
                         data-form-type="other"
                         data-1p-ignore
                         data-bwignore
                     >
-                    <button class="btn-add" id="addTaskBtn" title="Save task" aria-label="Save task" type="button">
-                        <span data-icon="disk" data-size="24" data-stroke="1"></span>
+                    <button class="btn-add" id="addTaskBtn" title="Add task" aria-label="Add task" type="button">
+                        <span data-icon="plus" data-size="28" data-stroke="1.5"></span>
                     </button>
                 </div>
             </section>
 
             <!-- Focus Tasks -->
             <section class="task-section focus-section">
-                <h2 class="section-title">Today's Focus Tasks <span class="focus-counter" id="focusCounter" title="Finished focus tasks / daily goal">0/6</span></h2>
+                <h2 class="section-title">Today's Focus Tasks <span class="focus-counter" id="focusCounter" title="Finished / chosen focus tasks (and the most you can choose per day)">0/0 (max 6)</span></h2>
                 <div class="task-list" id="focusList"></div>
             </section>
 
@@ -84,7 +87,7 @@
                         The Ivy Lee Method
                     </h2>
                     <p>
-                        Focus, Prioritize, Deliver. Inspired by the Ivy Lee Method, this app helps you brainstorm and then ruthlessly narrow your daily focus to your top 6 tasks (adjustable).
+                        Focus, Prioritise, Deliver. Inspired by the Ivy Lee Method, this app helps you brainstorm and then ruthlessly narrow your daily focus to your top 6 tasks (adjustable).
                     </p>
                     <p>
                         Add any extra tasks you plan to do today if time allows, or move them to the backlog to avoid overwhelm and ensure your most important work gets done.
@@ -96,16 +99,16 @@
                     <h3>Today View</h3>
                     <div class="help-card">
                         <p>
-                            <strong>Focus Section:</strong> Your top 6 tasks (adjustable) for today. The counter next to the heading (for example 4/6) shows how many of your daily goal you have finished. The tasks are numbered: drag to set the order and always start with number 1. Click the number to remove a task from focus.
+                            <strong>Focus Section:</strong> Your top 6 tasks (adjustable) for today. The counter next to the heading (for example 4/5 (max 6)) shows how many of your chosen focus tasks you have finished, and the most you can choose. The tasks are numbered: drag to set the order and always start with number 1. Click the number to remove a task from focus.
                         </p>
                         <p>
                             <strong>Other tasks:</strong> Additional tasks you plan to do today if time allows.
                         </p>
                         <p>
-                            <strong>Swipe Actions:</strong><br>
+                            <strong>Moving and finishing tasks:</strong><br>
                             • Click <span class="inline-icon" data-icon="check" data-size="18"></span> or swipe <strong>LEFT</strong> to mark as done. The task stays on your list, struck through, for the rest of the day and moves to the Archive tomorrow. Click ✓ again to undo.<br>
-                            • Swipe <strong>RIGHT</strong> to move to backlog<br>
-                            • Drag <strong>UP/DOWN</strong> to reorder within sections
+                            • Click <span class="inline-icon" data-icon="box" data-size="18"></span> or swipe <strong>RIGHT</strong> to move to the backlog<br>
+                            • Drag the <span class="inline-icon" data-icon="grip" data-size="18" data-stroke="3"></span> handle up or down (or swipe up or down on a touch screen) to reorder within a section
                         </p>
                         <p>
                             <strong>Other Actions:</strong><br>
@@ -125,7 +128,7 @@
                         </p>
                         <p>
                             <strong>Actions:</strong><br>
-                            • Swipe <strong>LEFT</strong> to move back to Today's Tasks<br>
+                            • Click <span class="inline-icon" data-icon="arrowLeft" data-size="18"></span> or swipe <strong>LEFT</strong> to move back to Today<br>
                             • Click <span class="inline-icon" data-icon="pen" data-size="18"></span> to edit<br>
                             • Click <span class="inline-icon" data-icon="trash" data-size="18"></span> to delete
                         </p>
@@ -141,7 +144,7 @@
                         </p>
                         <p>
                             <strong>Actions:</strong><br>
-                            • Swipe <strong>LEFT</strong> to move back to Today's Tasks<br>
+                            • Click <span class="inline-icon" data-icon="arrowLeft" data-size="18"></span> or swipe <strong>LEFT</strong> to move back to Today<br>
                             • Click <span class="inline-icon" data-icon="pen" data-size="18"></span> to edit<br>
                             • Click <span class="inline-icon" data-icon="trash" data-size="18"></span> to delete
                         </p>
@@ -164,13 +167,16 @@
                         <p>
                             <strong>Export data:</strong> Download all your tasks, backlog and archive as a JSON file for backup.
                         </p>
+                        <p>
+                            <strong>Import data:</strong> Restore a backup made with Export. You are asked to confirm first, because it replaces everything you have now.
+                        </p>
                     </div>
                 </div>
 
                 <!-- Tips -->
                 <div class="help-tips">
                     <h3>
-                        <svg width="20px" height="20px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="var(--primary-teal-dark)"><path d="M21 2L20 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3 2L4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M21 16L20 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3 16L4 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9 18H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10 21H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M11.9998 3C7.9997 3 5.95186 4.95029 5.99985 8C6.02324 9.48689 6.4997 10.5 7.49985 11.5C8.5 12.5 9 13 8.99985 15H14.9998C15 13.0001 15.5 12.5 16.4997 11.5001L16.4998 11.5C17.4997 10.5 17.9765 9.48689 17.9998 8C18.0478 4.95029 16 3 11.9998 3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        <span class="inline-icon help-tips-icon" data-icon="bulb" data-size="20"></span>
                         Pro Tips
                     </h3>
                     <ul>
@@ -234,20 +240,24 @@
                     </div>
                     <div class="setting-item setting-item-last">
                         <label>Data:</label>
-                        <button class="theme-button" id="exportDataBtn">
-                            <svg width="18px" height="18px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 20L18 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path d="M12 4V16M12 16L15.5 12.5M12 16L8.5 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                            Export data (JSON)
-                        </button>
+                        <div class="data-buttons">
+                            <button type="button" class="theme-button" id="exportDataBtn">
+                                <span class="inline-icon" data-icon="download" data-size="18"></span>
+                                Export data (JSON)
+                            </button>
+                            <button type="button" class="theme-button" id="importDataBtn">
+                                <span class="inline-icon" data-icon="upload" data-size="18"></span>
+                                Import data (JSON)
+                            </button>
+                            <input type="file" id="importFile" accept="application/json,.json" hidden>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Version and Copyright Info -->
                 <div class="app-footer">
                     <p>Version: 1.0</p>
-                    <p>Build: 20261115.10</p>
+                    <p>Build: 20261115.17</p>
                     <p class="app-footer-copyright">Copyright © 2025–2026 Nyqvist. All rights reserved.</p>
                     <p><a href="mailto:contact@nyqvist.net">contact@nyqvist.net</a></p>
                     <p><a href="https://www.nyqvist.net" target="_blank" rel="noopener">www.nyqvist.net</a></p>
@@ -330,7 +340,7 @@
         <div class="assistant-section">
             <div class="assistant-card">
                 <div class="assistant-top">
-                    <span class="assistant-top-spacer assistant-icon" data-icon="headset" data-size="22" aria-hidden="true"></span>
+                    <span class="assistant-top-spacer assistant-icon" data-icon="bulb" data-size="22" aria-hidden="true"></span>
                     <div class="assistant-title">Step-by-step guide</div>
                     <button type="button" class="assistant-btn assistant-close" aria-label="Close assistant"><span data-icon="close" data-size="20"></span></button>
                 </div>
@@ -354,6 +364,16 @@
         <p id="newDayText" class="newday-text"></p>
         <ul id="newDayList" class="newday-list"></ul>
         <button type="button" id="newDayConfirm" class="modal-button modal-button-primary">Start the day</button>
+    </dialog>
+
+    <!-- Confirms before a backup replaces the current data (see js/ui/import-data.js) -->
+    <dialog id="importDialog" class="modal" aria-labelledby="importTitle">
+        <h2 id="importTitle" class="newday-title">Replace your data?</h2>
+        <p id="importText" class="newday-text"></p>
+        <div class="modal-buttons">
+            <button type="button" id="importCancel" class="modal-button">Cancel</button>
+            <button type="button" id="importConfirm" class="modal-button modal-button-primary">Replace data</button>
+        </div>
     </dialog>
 
     <script type="module" src="js/main.js"></script>

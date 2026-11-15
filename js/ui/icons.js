@@ -29,8 +29,29 @@ const PATHS = {
         'M3 3L21 3',
         'M21 7V20.4C21 20.7314 20.7314 21 20.4 21H3.6C3.26863 21 3 20.7314 3 20.4V7',
     ],
-    headset: [
-        'M4 11.4998L3.51493 11.6211C2.62459 11.8437 2 12.6436 2 13.5614V15.4382C2 16.356 2.62459 17.1559 3.51493 17.3785L5.25448 17.8134C5.63317 17.9081 6 17.6217 6 17.2313V11.7683C6 11.3779 5.63317 11.0915 5.25448 11.1862L4 11.4998ZM4 11.4998V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V11.4998M20 11.4998L20.4851 11.6211C21.3754 11.8437 22 12.6436 22 13.5614V15.4382C22 16.356 21.3754 17.1559 20.4851 17.3785L20 17.4998M20 11.4998L18.7455 11.1862C18.3668 11.0915 18 11.3779 18 11.7683V17.2313C18 17.6217 18.3668 17.9081 18.7455 17.8134L20 17.4998M15 20.5H18C19.1046 20.5 20 19.6046 20 18.5V18V17.4998M15 20.5C15 19.6716 14.3284 19 13.5 19H10.5C9.67157 19 9 19.6716 9 20.5C9 21.3284 9.67157 22 10.5 22H13.5C14.3284 22 15 21.3284 15 20.5Z',
+    // Lightbulb: marks the help box
+    bulb: [
+        'M9 18H15',
+        'M10 21H14',
+        'M11.9998 3C7.9997 3 5.95186 4.95029 5.99985 8C6.02324 9.48689 6.4997 10.5 7.49985 11.5C8.5 12.5 9 13 8.99985 15H14.9998C15 13.0001 15.5 12.5 16.4997 11.5001L16.4998 11.5C17.4997 10.5 17.9765 9.48689 17.9998 8C18.0478 4.95029 16 3 11.9998 3Z',
+    ],
+    plus: [
+        'M12 5V19M5 12H19',
+    ],
+    arrowLeft: [
+        'M19 12H5M12 19L5 12L12 5',
+    ],
+    // Six dots: the handle for dragging a task
+    grip: [
+        'M9 5H9.01M15 5H15.01M9 12H9.01M15 12H15.01M9 19H9.01M15 19H15.01',
+    ],
+    download: [
+        'M6 20L18 20',
+        'M12 4V16M12 16L15.5 12.5M12 16L8.5 12.5',
+    ],
+    upload: [
+        'M6 20L18 20',
+        'M12 16V4M12 4L15.5 7.5M12 4L8.5 7.5',
     ],
     // App logo: a triangle pointing up and to the right, divided into six smaller triangles
     logo: [
@@ -80,7 +101,7 @@ export function icon(name, { size = 24, strokeWidth = 1.5, filled = false, inlin
  * @param {string|number} content - What to show inside the star
  * @param {Object} [options]
  * @param {number} [options.size=34] - Width and height in px
- * @param {boolean} [options.done=false] - Outlined star (a finished task) instead of a filled one
+ * @param {boolean} [options.done=false] - Faded star (a finished task)
  * @param {boolean} [options.inline=false] - Align with surrounding text
  * @returns {string} HTML markup
  */
@@ -88,7 +109,7 @@ export function numberedStar(content, { size = 34, done = false, inline = false 
     const classes = ['priority-badge', done && 'priority-badge-done', inline && 'priority-badge-inline']
         .filter(Boolean).join(' ');
     return `<span class="${classes}" style="--star-size: ${size}px" aria-hidden="true">`
-        + icon('star', { size, strokeWidth: done ? 1.5 : 1, filled: !done })
+        + icon('star', { size, strokeWidth: 1, filled: true })
         + `<span class="priority-number">${content}</span></span>`;
 }
 

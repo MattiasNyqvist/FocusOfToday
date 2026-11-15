@@ -15,7 +15,7 @@ import { attachSwipe, slideOut } from './gestures.js';
 import { attachDragAndDrop, previewMove, commitMove, clearPreview, VERTICAL_MOVE_THRESHOLD } from './reorder.js';
 import { createIconButton, createTextElement, createEditAndDeleteButtons, createSwipeFrame } from './task-row.js';
 
-/** Redraw both lists and the x/6 counter. */
+/** Redraw both lists and the counter next to the focus heading. */
 export function renderTasks() {
     const tasks = loadTasks();
 
@@ -26,12 +26,15 @@ export function renderTasks() {
 
     renderList('focusList', focusTasks, 'Star a task below to put it here', true);
     renderList('allTasksList', otherTasks, 'No tasks added', false);
-    updateFocusCounter(focusTasks.filter(t => t.status === 'done').length);
+    updateFocusCounter(focusTasks.filter(t => t.status === 'done').length, focusTasks.length);
 }
 
-/** "Finished focus tasks / daily goal", shown next to the heading. */
-function updateFocusCounter(doneCount) {
-    document.getElementById('focusCounter').textContent = `${doneCount}/${CONFIG.maxFocusTasks}`;
+/** "Done / chosen (max N)", shown next to the heading, for example "1/5 (max 6)". */
+function updateFocusCounter(doneCount, chosenCount) {
+    const counter = document.getElementById('focusCounter');
+    const max = document.createElement('span');
+    max.textContent = ` (max ${CONFIG.maxFocusTasks})`;
+    counter.replaceChildren(`${doneCount}/${chosenCount}`, max);
 }
 
 function renderList(containerId, tasks, emptyMessage, numbered) {
@@ -87,6 +90,15 @@ function createLeadingButton(task, priority) {
     return button;
 }
 
+/** Six dots at the left edge of a row: the task can be dragged up or down. */
+function createGrip() {
+    const grip = document.createElement('span');
+    grip.className = 'task-grip';
+    grip.title = 'Drag to reorder';
+    grip.innerHTML = icon('grip', { size: 12, strokeWidth: 3.5 });
+    return grip;
+}
+
 function createTaskRow(task, priority) {
     const isDone = task.status === 'done';
 
@@ -105,10 +117,23 @@ function createTaskRow(task, priority) {
         onClick: () => toggleDone(task.id, row)
     });
 
+    // Open tasks can be dragged (the grip shows it) and moved to the backlog with a button.
+    // A done task is reopened with the check button first.
+    const openTaskParts = isDone ? [] : [
+        createIconButton({
+            className: 'task-move',
+            label: 'Move to backlog',
+            iconName: 'box',
+            onClick: () => sendToBacklog(task.id)
+        })
+    ];
+
     row.append(
+        ...(isDone ? [] : [createGrip()]),
         createLeadingButton(task, priority),
         text,
         doneButton,
+        ...openTaskParts,
         ...createEditAndDeleteButtons(LIST.TASKS, task, text)
     );
 

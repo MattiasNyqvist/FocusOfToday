@@ -26,11 +26,11 @@
 
     /* Neutrals */
     --text-dark: #1F2937;           /* Dark gray text */
-    --text-light: #6B7280;          /* Medium gray text */
+    --text-light: #4B5563;          /* Medium gray text (7.5:1 on white) */
     --text-on-teal: #FFFFFF;        /* White text on teal */
     --border-light: #E5E7EB;        /* Light border */
     --bg-white: #FFFFFF;
-    --bg-gray: #F9FAFB;             /* Softer gray background */
+    --bg-gray: #F4F7F6;             /* Page background around the app on wide screens */
 
     /* Accent Colors */
     --archive-green: #10B981;       /* Emerald green */
@@ -38,6 +38,7 @@
     --delete-red: #EF4444;          /* Modern red */
 
     --nav-height: 70px;
+    --app-max-width: 720px;         /* Width of the app on tablets and desktops */
 }
 
 html {
@@ -440,7 +441,9 @@ body.dark-mode .modal::backdrop {
 .modal-button {
     width: 100%;
     padding: 14px 24px;
-    border: none;
+    border: 1px solid var(--border-light);
+    background: var(--bg-white);
+    color: var(--text-dark);
     border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
@@ -448,13 +451,21 @@ body.dark-mode .modal::backdrop {
     transition: all 0.2s;
 }
 
+/* Two buttons side by side (Cancel / confirm) */
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
 .modal-button-primary {
-    background: var(--primary-teal);
+    background: var(--primary-teal-dark);
+    border-color: transparent;
     color: white;
 }
 
 .modal-button-primary:hover {
-    background: var(--primary-teal-dark);
+    background: var(--header-teal);
     transform: translateY(-1px);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
@@ -488,6 +499,7 @@ body.dark-mode .modal::backdrop {
 /* Task Edit Input */
 .task-edit-input {
     flex: 1;
+    min-width: 0;
     padding: 12px 16px;
     border: 1px solid var(--border-light);
     border-radius: 8px;
@@ -514,7 +526,7 @@ body.dark-mode .modal::backdrop {
     justify-content: center;
     flex-shrink: 0;
     padding: 0;
-    color: var(--primary-teal);
+    color: var(--primary-teal-dark);
     margin-right: -4px;
 }
 
@@ -529,6 +541,26 @@ body.dark-mode .modal::backdrop {
 .btn-add svg {
     width: 28px;
     height: 28px;
+}
+
+/* Heading with a counter at the right end: "Add new task          5 of 120" */
+.section-title-with-count {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.input-count {
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text-light);
+}
+
+.input-count-full {
+    color: var(--delete-red);
+    font-weight: 600;
 }
 
 /* Task Sections */
@@ -569,8 +601,14 @@ body.dark-mode .section-title {
 .section-title .focus-counter {
     margin-left: 6px;
     font-weight: 700;
-    color: var(--primary-teal-dark);
+    color: var(--header-teal);
     letter-spacing: 0;
+}
+
+/* The "(max 6)" part: quieter and not in capitals like the heading */
+.section-title .focus-counter span {
+    text-transform: none;
+    font-size: 0.9em;
 }
 
 /* Task List */
@@ -649,9 +687,9 @@ body.dark-mode .section-title {
     opacity: 0.5;
 }
 
-/* Done: outlined star with a teal check mark */
-.priority-badge-done .priority-number {
-    color: var(--primary-teal-dark);
+/* Done: the same filled star, faded, with a check mark. It still counts as part of today's focus. */
+.priority-badge-done {
+    opacity: 0.5;
 }
 
 .task-priority:disabled {
@@ -712,6 +750,8 @@ body.dark-mode .section-title {
 
 .task-text {
     flex: 1;
+    min-width: 0;                /* lets the text shrink so the buttons never leave the screen */
+    overflow-wrap: anywhere;     /* a long word or web address breaks instead of overflowing */
     font-size: clamp(14px, 3.5vw, 17px);
     color: var(--text-dark);
     margin-left: 8px;
@@ -719,6 +759,7 @@ body.dark-mode .section-title {
 
 /* Task Action Buttons - Base Styles */
 .task-star,
+.task-move,
 .task-edit,
 .task-done,
 .task-delete {
@@ -737,6 +778,7 @@ body.dark-mode .section-title {
 }
 
 .task-star:hover,
+.task-move:hover,
 .task-edit:hover,
 .task-done:hover,
 .task-delete:hover {
@@ -763,14 +805,58 @@ body.dark-mode .section-title {
 
 /* The priority star is a little larger than the plain star, so it needs less offset */
 .task-priority {
-    margin-left: -8px;
+    margin-left: -6px;
     margin-right: 0;
+}
+
+/* Space between the action icons, so a tap on one does not hit its neighbour.
+   Delete gets the most room: it is the one that is hardest to undo. */
+.task-done,
+.task-move,
+.task-edit {
+    margin-left: 4px;
+}
+
+/* Move Button (to backlog / back to Today) - same look as edit */
+.task-move {
+    color: var(--text-light);
+}
+
+.task-move:hover {
+    color: var(--primary-teal-dark);
+    background: rgba(102, 178, 178, 0.15);
+}
+
+.task-move svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Drag handle at the left edge of a row, in the row's padding */
+.task-grip {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    color: var(--text-light);
+    opacity: 0.45;
+    cursor: grab;
+    transition: opacity 0.2s;
+}
+
+.task-item:hover .task-grip {
+    opacity: 0.9;
+}
+
+.task-item.dragging .task-grip {
+    cursor: grabbing;
 }
 
 /* Edit Button - Specific Styles */
 .task-edit {
     color: var(--text-light);
-    margin-right: 8px;
+    margin-right: 12px;
 }
 
 .task-edit:hover {
@@ -955,7 +1041,7 @@ body.dark-mode .section-title {
 .setting-value {
     font-size: 18px;
     font-weight: 600;
-    color: var(--primary-teal);
+    color: var(--header-teal);
 }
 
 .range-labels {
@@ -1002,8 +1088,8 @@ body.dark-mode .section-title {
 
 .theme-toggle input[type="radio"]:checked + label,
 .theme-toggle label:has(input[type="radio"]:checked) {
-    border-color: var(--primary-teal);
-    background: var(--primary-teal);
+    border-color: var(--primary-teal-dark);
+    background: var(--primary-teal-dark);
     color: white;
     font-weight: 600;
 }
@@ -1025,6 +1111,17 @@ body.dark-mode .section-title {
     color: var(--text-dark);
     font-size: 16px;
     font-weight: normal;
+}
+
+/* Export and import, one under the other */
+.data-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.theme-button .inline-icon {
+    margin-right: 6px;
 }
 
 .theme-button:hover {
@@ -1074,6 +1171,10 @@ body.dark-mode .section-title {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.help-tips-icon {
+    color: var(--primary-teal-dark);
 }
 
 .help-card {
@@ -1150,7 +1251,7 @@ body.dark-mode .section-title {
 
 @media (min-width: 768px) {
     .bottom-nav {
-        max-width: 480px;
+        max-width: var(--app-max-width);
         left: 50%;
         transform: translateX(-50%);
     }
@@ -1202,16 +1303,53 @@ body.dark-mode .section-title {
 }
 
 /* Responsive */
+/* Tablets and desktops: the app is a centered column with a frame around it */
 @media (min-width: 768px) {
     .app-container {
-        max-width: 480px;
+        max-width: var(--app-max-width);
         margin: 0 auto;
         border-left: 1px solid var(--border-light);
         border-right: 1px solid var(--border-light);
+        box-shadow: 0 0 24px rgba(0, 0, 0, 0.08);
+    }
+}
+
+/* Very narrow phones: the guide text needs one more line */
+@media (max-width: 340px) {
+    .assistant-viewport {
+        height: 5.6em;
+    }
+}
+
+/* Small phones: slightly smaller buttons so the task text keeps its room */
+@media (max-width: 400px) {
+    .task-star,
+    .task-move,
+    .task-edit,
+    .task-done,
+    .task-delete {
+        width: 30px;
+        height: 30px;
+    }
+
+    .task-edit {
+        margin-right: 10px;
+    }
+
+    .task-item {
+        padding-left: 14px;
+        padding-right: 12px;
     }
 }
 
 /* Dark Mode Specific Overrides */
+/* Teal text needs a lighter teal on the dark background */
+body.dark-mode .section-title .focus-counter,
+body.dark-mode .setting-value,
+body.dark-mode .btn-add {
+    color: var(--primary-teal-light);
+}
+
 body.dark-mode .task-star {
     color: #b2d8d8;
 }

@@ -45,12 +45,13 @@ js/
     render.js         Redraws all lists.
     task-list.js      Today view (focus list + other tasks).
     simple-lists.js   Backlog and Archive views.
-    task-row.js       Pieces shared by all rows: buttons, swipe frame, inline editing.
-    gestures.js       Swipe handling (touch).
-    reorder.js        Reordering: swipe up/down (touch) and drag and drop (mouse).
+    task-row.js       Pieces shared by all rows: icon buttons, swipe frame, inline editing.
+    gestures.js       Swipe handling (touch). Every swipe also has a button on the row.
+    reorder.js        Reordering: swipe up/down (touch) and drag and drop by the grip (mouse).
     assistant.js      The step-by-step help box.
     new-day.js        The new-day review dialog.
-    settings.js       Settings view.
+    settings.js       Settings view (focus limit, assistant, theme, export).
+    import-data.js    Restores a backup (checked first, confirmed by the user).
     navigation.js     Switching between views.
     components.js     Copies <template>s into the page.
     icons.js          All SVG icons in one place.

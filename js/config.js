@@ -18,6 +18,9 @@ export const STORAGE_KEYS = {
 export const FOCUS_LIMIT_MIN = 1;
 export const FOCUS_LIMIT_MAX = 10;
 
+/** The longest task text a user can type. Tasks are short on purpose: on a phone this is about four lines. */
+export const MAX_TASK_LENGTH = 120;
+
 /** Settings the user can change. Saved with saveSettings(). */
 export const CONFIG = {
     /** Max number of focus tasks per day */

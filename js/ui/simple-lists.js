@@ -1,14 +1,14 @@
 /**
  * Backlog and Archive views
- * Both lists look alike: a row with the task text, an edit and a delete button,
- * and a swipe to the left that moves the task back to Today.
+ * Both lists look alike: a row with the task text and buttons to move it back to
+ * Today, edit it or delete it. Swiping a row to the left also moves it back to Today.
  */
 
 import { LIST, loadBacklog, loadArchive } from '../storage.js';
 import { returnToToday } from '../actions.js';
 import { icon } from './icons.js';
 import { attachSwipe, slideOut } from './gestures.js';
-import { createTextElement, createEditAndDeleteButtons, createSwipeFrame } from './task-row.js';
+import { createIconButton, createTextElement, createEditAndDeleteButtons, createSwipeFrame } from './task-row.js';
 
 export function renderBacklog() {
     const emptyContent = document.createElement('span');
@@ -74,6 +74,12 @@ function renderSimpleList({ containerId, list, tasks, rowClass, emptyContent, cr
         row.append(
             ...(createLeading ? [createLeading(task)] : []),
             text,
+            createIconButton({
+                className: 'task-move',
+                label: 'Move to Today',
+                iconName: 'arrowLeft',
+                onClick: () => returnToToday(list, task.id)
+            }),
             ...createEditAndDeleteButtons(list, task, text)
         );
 

@@ -1,6 +1,7 @@
 /**
  * Settings view
- * The focus limit, the assistant switch, the theme and the data export.
+ * The focus limit, the assistant switch, the theme and the data export
+ * (importing is in import-data.js).
  */
 
 import { CONFIG, STORAGE_KEYS, saveSettings } from '../config.js';
@@ -29,13 +30,18 @@ function exportToFile() {
     showToast('✓ Data exported');
 }
 
+/** Show the current focus limit in the slider and its label. */
+export function syncFocusLimitControl() {
+    document.getElementById('maxFocusTasks').value = String(CONFIG.maxFocusTasks);
+    document.getElementById('maxFocusTasksValue').textContent = CONFIG.maxFocusTasks;
+}
+
 /** Show the saved settings in the form and connect the controls. Call once at start. */
 export function initSettings() {
     // --- Focus limit: the number follows the slider, the value is saved on release ---
     const slider = document.getElementById('maxFocusTasks');
     const sliderValue = document.getElementById('maxFocusTasksValue');
-    slider.value = String(CONFIG.maxFocusTasks);
-    sliderValue.textContent = CONFIG.maxFocusTasks;
+    syncFocusLimitControl();
 
     slider.addEventListener('input', () => {
         sliderValue.textContent = slider.value;

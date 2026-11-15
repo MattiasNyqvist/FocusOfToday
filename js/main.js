@@ -15,12 +15,14 @@ import { renderAll } from './ui/render.js';
 import { initNavigation, getCurrentView } from './ui/navigation.js';
 import { initAssistant, showAssistantFor } from './ui/assistant.js';
 import { initSettings } from './ui/settings.js';
+import { initImportData } from './ui/import-data.js';
 import { initTaskInput } from './ui/task-input.js';
 import { checkNewDay, watchForNewDay } from './ui/new-day.js';
 
 // Module scripts run after the page has been parsed, so the DOM is ready here.
 mountComponents();
 initSettings();
+initImportData();
 initNavigation();
 initTaskInput();
 initAssistant();

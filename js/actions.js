@@ -5,7 +5,7 @@
  * Nothing in here builds or touches the task list in the DOM.
  */
 
-import { CONFIG } from './config.js';
+import { CONFIG, MAX_TASK_LENGTH } from './config.js';
 import * as storage from './storage.js';
 import { LIST } from './storage.js';
 import { notifyDataChanged } from './events.js';
@@ -26,7 +26,7 @@ export function addTask(text) {
 
 /** Change the text of a task in any list. */
 export function editTaskText(list, id, text) {
-    const trimmed = text.trim();
+    const trimmed = text.trim().slice(0, MAX_TASK_LENGTH);
     if (!trimmed) return;
     storage.updateItem(list, id, { text: trimmed });
     notifyDataChanged();
@@ -106,9 +106,10 @@ export function toggleDone(id, element) {
     if (element) showCelebration(element);
     notifyDataChanged();
 
-    const doneInFocus = storage.loadTasks().filter(t => t.starred && t.status === 'done').length;
-    if (task.starred && doneInFocus >= CONFIG.maxFocusTasks) {
-        showToast(`🎉 ${doneInFocus}/${CONFIG.maxFocusTasks} - all focus tasks done!`);
+    const focusTasks = storage.loadTasks().filter(t => t.starred);
+    const doneInFocus = focusTasks.filter(t => t.status === 'done').length;
+    if (task.starred && doneInFocus === focusTasks.length) {
+        showToast(`🎉 ${doneInFocus}/${focusTasks.length} - all focus tasks done!`);
     } else {
         showToast('✓ Task done');
     }
