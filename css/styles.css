@@ -19,6 +19,7 @@
     --primary-teal: #66b2b2;        /* Active buttons - medium teal */
     --primary-teal-dark: #008080;   /* Active menu items - classic teal */
     --primary-teal-light: #99cccc;  /* Light accents */
+    --button-ring: rgba(75, 85, 99, 0.45);   /* Thin ring around the round buttons on a row */
     --tone-bar: #e3f0f0;            /* Behind the quick capture field */
     --tone-focus: #cfe5e5;          /* Today's focus tasks - the strongest tint */
     --header-teal: #006666;         /* Header background - deep teal */
@@ -65,6 +66,7 @@ body.dark-mode {
     --primary-teal: #66b2b2;        /* Keep same for consistency */
     --primary-teal-dark: #008080;   /* Classic teal */
     --primary-teal-light: #99cccc;  /* Light teal */
+    --button-ring: rgba(156, 163, 175, 0.5);
     --tone-bar: #1a3535;
     --tone-focus: #123f3f;
     --header-teal: #004d4d;         /* Darker header for dark mode */
@@ -636,37 +638,23 @@ body.dark-mode .section-title {
     user-select: none;
 }
 
-/* Priority number in the focus list (replaces the star) */
-/* A star with the priority number inside */
+/* The rank of a task in today's focus: a filled circle with the number inside */
 .priority-badge {
-    --star-size: 34px;
-    position: relative;
-    width: var(--star-size);
-    height: var(--star-size);
-    color: var(--primary-teal-dark);
+    --badge-size: 28px;
+    width: var(--badge-size);
+    height: var(--badge-size);
+    border-radius: 50%;
+    background: var(--primary-teal-dark);
+    color: var(--text-on-teal);
+    font-size: calc(var(--badge-size) * 0.5);
+    font-weight: 700;
+    line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.priority-badge svg {
-    width: var(--star-size);
-    height: var(--star-size);
-}
-
-/* The number sits on the star's centre, which is a little below the box centre */
-.priority-number {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--text-on-teal);
-    font-weight: 700;
-    font-size: calc(var(--star-size) * 0.38);
-    line-height: 1;
-}
-
-.task-priority:hover {
+.task-rank:hover {
     background: rgba(0, 0, 0, 0.05);
 }
 
@@ -676,6 +664,12 @@ body.dark-mode .section-title {
 
 .task-done:hover {
     color: var(--primary-teal-dark);
+    background: rgba(102, 178, 178, 0.15);
+}
+
+.task-done.is-done:hover {
+    color: var(--text-on-teal);
+    background: var(--header-teal);
 }
 
 /* Done tasks stay on the list for the rest of the day */
@@ -684,17 +678,19 @@ body.dark-mode .section-title {
     color: var(--text-light);
 }
 
-/* Done: the same filled star, faded, with a check mark. It still counts as part of today's focus. */
+/* Done: the same filled circle, faded, with a check mark. It still counts as part of today's focus. */
 .priority-badge-done {
     opacity: 0.5;
 }
 
-.task-priority:disabled {
+.task-rank:disabled {
     cursor: default;
 }
 
 .task-done.is-done {
-    color: var(--primary-teal-dark);
+    color: var(--text-on-teal);
+    background: var(--primary-teal-dark);
+    border-color: var(--primary-teal-dark);
 }
 
 /* New-day review dialog */
@@ -753,13 +749,13 @@ body.dark-mode .section-title {
     color: var(--text-light);
 }
 
-/* A free place in today's focus: a dashed numbered star and "Pick a task" */
+/* A free place in today's focus: a dashed numbered circle and "Add a focus task" */
 .focus-slot {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
-    padding: 6px 16px 6px 13px;
+    padding: 6px 16px 6px 20px;
     border: none;
     background: transparent;
     color: var(--text-light);
@@ -779,24 +775,14 @@ body.dark-mode .section-title {
 }
 
 .priority-badge-empty {
+    background: transparent;
+    border: 2px dashed var(--primary-teal-dark);
     color: var(--primary-teal-dark);
-    opacity: 0.55;
-}
-
-.priority-badge-empty svg path {
-    stroke-dasharray: 2.5 2.5;
-}
-
-.priority-badge-empty .priority-number {
-    color: var(--primary-teal-dark);
-}
-
-body.dark-mode .priority-badge-empty {
-    color: var(--primary-teal-light);
     opacity: 0.6;
 }
 
-body.dark-mode .priority-badge-empty .priority-number {
+body.dark-mode .priority-badge-empty {
+    border-color: var(--primary-teal-light);
     color: var(--primary-teal-light);
 }
 
@@ -901,7 +887,7 @@ body.dark-mode .task-pick:hover {
 }
 
 /* Task Action Buttons - Base Styles */
-.task-star,
+.task-rank,
 .task-move,
 .task-menu-btn,
 .task-done {
@@ -919,42 +905,41 @@ body.dark-mode .task-pick:hover {
     transition: all 0.2s;
 }
 
-.task-star:hover,
+.task-rank:hover,
 .task-move:hover,
 .task-menu-btn:hover,
 .task-done:hover {
     transform: scale(1.1);
 }
 
-/* Star Button - Specific Styles */
-.task-star {
-    color: var(--text-dark);
-    /* 32px button with a 24px icon/badge: -4px puts it on the 16px gutter,
-       in line with the other content */
-    margin-left: -4px;
-    margin-right: 4px;
-}
-
-.task-star:hover {
-    background: rgba(255, 193, 7, 0.1);
-}
-
-.task-star svg {
-    width: 24px;
-    height: 24px;
-}
-
-/* The priority star is a little larger than the plain star, so it needs less offset */
-.task-priority {
-    margin-left: -2px;
+/* The rank button at the left of a focus row (taps take the task out of focus). The button is
+   32px and the circle 28px. 2px of margin leaves the same air between the drag handle and the
+   circle as between the check button and the "..." button (6px). The free places below use
+   the same offset, so the circles line up. */
+.task-rank {
+    margin-left: 2px;
     margin-right: 0;
+}
+
+/* The round buttons on a row (check, back to Today, "...") have a thin ring, so it is clear
+   that they are buttons. The ring is quiet: it has the same weight as the icons. */
+.task-done,
+.task-move,
+.task-menu-btn {
+    border: 1.5px solid var(--button-ring);
+}
+
+.task-done:hover,
+.task-move:hover,
+.task-menu-btn:hover {
+    border-color: var(--primary-teal-dark);
 }
 
 /* Space between the buttons of a row, so a tap on one does not hit its neighbour */
 .task-done,
 .task-move,
 .task-menu-btn {
-    margin-left: 4px;
+    margin-left: 6px;
 }
 
 /* The "..." button */
@@ -1416,16 +1401,12 @@ body.dark-mode .task-pick:hover {
 
 /* Small phones: slightly smaller buttons so the task text keeps its room */
 @media (max-width: 400px) {
-    .task-star,
+    .task-rank,
     .task-move,
     .task-menu-btn,
     .task-done {
         width: 30px;
         height: 30px;
-    }
-
-    .task-item {
-        padding-right: 12px;
     }
 }
 
@@ -1435,9 +1416,5 @@ body.dark-mode .section-title .focus-counter strong,
 body.dark-mode .setting-value,
 body.dark-mode .btn-add {
     color: var(--primary-teal-light);
-}
-
-body.dark-mode .task-star {
-    color: #b2d8d8;
 }
 

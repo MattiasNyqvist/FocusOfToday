@@ -13,7 +13,7 @@
 import { CONFIG } from '../config.js';
 import { LIST, loadTasks, canAddFocusTask } from '../storage.js';
 import { toggleDone, toggleFocus, sendToBacklog } from '../actions.js';
-import { icon, numberedStar } from './icons.js';
+import { icon, numberedCircle } from './icons.js';
 import { attachSwipe, slideOut } from './gestures.js';
 import { attachDragAndDrop, previewMove, commitMove, clearPreview, VERTICAL_MOVE_THRESHOLD } from './reorder.js';
 import { createIconButton, createTextElement, createRowMenu, createSwipeFrame } from './task-row.js';
@@ -103,7 +103,7 @@ function createEmptySlot(number) {
     slot.type = 'button';
     slot.className = 'focus-slot';
     slot.setAttribute('aria-label', `Free place ${number} in today's focus. Choose a task from the list below.`);
-    slot.innerHTML = numberedStar(number, { empty: true }) + '<span class="focus-slot-text">Add a focus task</span>';
+    slot.innerHTML = numberedCircle(number, { empty: true }) + '<span class="focus-slot-text">Add a focus task</span>';
     slot.addEventListener('click', goToWaitingList);
     return slot;
 }
@@ -117,23 +117,23 @@ function pickTask(task) {
     }
 }
 
-/** The button at the left of a focus row: a priority number or a faded star with a check. */
+/** The button at the left of a focus row: a rank number or a faded circle with a check. */
 function createLeadingButton(task, priority) {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'task-star task-priority';
+    button.className = 'task-rank';
 
     if (task.status === 'done') {
         // Done focus task: not clickable (use the check button on the right to undo)
         button.disabled = true;
-        button.innerHTML = numberedStar('✓', { done: true });
+        button.innerHTML = numberedCircle('✓', { done: true });
         button.setAttribute('aria-label', 'Done');
     } else {
         // Open focus task: its priority number. Clicking takes it out of focus.
         const label = `Number ${priority} - click to take it out of today's focus`;
         button.title = label;
         button.setAttribute('aria-label', label);
-        button.innerHTML = numberedStar(priority);
+        button.innerHTML = numberedCircle(priority);
     }
 
     button.addEventListener('click', (e) => {

@@ -10,9 +10,6 @@
  */
 
 const PATHS = {
-    star: [
-        'M8.58737 8.23597L11.1849 3.00376C11.5183 2.33208 12.4817 2.33208 12.8151 3.00376L15.4126 8.23597L21.2215 9.08017C21.9668 9.18848 22.2638 10.0994 21.7243 10.6219L17.5217 14.6918L18.5135 20.4414C18.6409 21.1798 17.8614 21.7428 17.1945 21.3941L12 18.678L6.80547 21.3941C6.1386 21.7428 5.35909 21.1798 5.48645 20.4414L6.47825 14.6918L2.27575 10.6219C1.73617 10.0994 2.03322 9.18848 2.77852 9.08017L8.58737 8.23597Z',
-    ],
     pen: [
         'M14.3632 5.65156L15.8431 4.17157C16.6242 3.39052 17.8905 3.39052 18.6716 4.17157L20.0858 5.58579C20.8668 6.36683 20.8668 7.63316 20.0858 8.41421L18.6058 9.8942M14.3632 5.65156L4.74749 15.2672C4.41542 15.5993 4.21079 16.0376 4.16947 16.5054L3.92738 19.2459C3.87261 19.8659 4.39148 20.3848 5.0115 20.33L7.75191 20.0879C8.21972 20.0466 8.65806 19.8419 8.99013 19.5099L18.6058 9.8942M14.3632 5.65156L18.6058 9.8942',
     ],
@@ -67,17 +64,15 @@ const PATHS = {
  * @param {Object} [options]
  * @param {number} [options.size=24] - Width and height in px
  * @param {number} [options.strokeWidth=1.5] - Line thickness
- * @param {boolean} [options.filled=false] - Fill the shape (used for the active star)
  * @param {boolean} [options.inline=false] - Align with surrounding text (use inside sentences)
  * @returns {string} SVG markup
  */
-export function icon(name, { size = 24, strokeWidth = 1.5, filled = false, inline = false } = {}) {
+export function icon(name, { size = 24, strokeWidth = 1.5, inline = false } = {}) {
     const paths = PATHS[name];
     if (!paths) throw new Error(`Unknown icon: ${name}`);
 
-    const fill = filled ? 'currentColor' : 'none';
     const body = paths
-        .map(d => `<path d="${d}" fill="${fill}" stroke="currentColor" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round"></path>`)
+        .map(d => `<path d="${d}" fill="none" stroke="currentColor" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round"></path>`)
         .join('');
     const cls = inline ? ' class="inline-icon"' : '';
 
@@ -85,21 +80,19 @@ export function icon(name, { size = 24, strokeWidth = 1.5, filled = false, inlin
 }
 
 /**
- * A star with a number (or check mark) inside: the priority marker of a focus task.
+ * A filled circle with a number (or check mark) inside: the rank of a task in today's focus.
  * Used for the numbers in today's focus and for the free places.
- * @param {string|number} content - What to show inside the star
+ * @param {string|number} content - What to show inside the circle
  * @param {Object} [options]
- * @param {number} [options.size=34] - Width and height in px
- * @param {boolean} [options.done=false] - Faded star (a finished task)
+ * @param {number} [options.size=28] - Width and height in px
+ * @param {boolean} [options.done=false] - Faded circle (a finished task)
  * @param {boolean} [options.empty=false] - Dashed outline: a free place in today's focus
  * @returns {string} HTML markup
  */
-export function numberedStar(content, { size = 34, done = false, empty = false } = {}) {
+export function numberedCircle(content, { size = 28, done = false, empty = false } = {}) {
     const classes = ['priority-badge', done && 'priority-badge-done', empty && 'priority-badge-empty']
         .filter(Boolean).join(' ');
-    return `<span class="${classes}" style="--star-size: ${size}px" aria-hidden="true">`
-        + icon('star', { size, strokeWidth: empty ? 1.5 : 1, filled: !empty })
-        + `<span class="priority-number">${content}</span></span>`;
+    return `<span class="${classes}" style="--badge-size: ${size}px" aria-hidden="true">${content}</span>`;
 }
 
 /**
