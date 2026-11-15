@@ -29,11 +29,10 @@ const PATHS = {
         'M3 3L21 3',
         'M21 7V20.4C21 20.7314 20.7314 21 20.4 21H3.6C3.26863 21 3 20.7314 3 20.4V7',
     ],
-    // Lightbulb: marks the help box
-    bulb: [
-        'M9 18H15',
-        'M10 21H14',
-        'M11.9998 3C7.9997 3 5.95186 4.95029 5.99985 8C6.02324 9.48689 6.4997 10.5 7.49985 11.5C8.5 12.5 9 13 8.99985 15H14.9998C15 13.0001 15.5 12.5 16.4997 11.5001L16.4998 11.5C17.4997 10.5 17.9765 9.48689 17.9998 8C18.0478 4.95029 16 3 11.9998 3Z',
+    help: [
+        'M12 21A9 9 0 1 0 12 3A9 9 0 0 0 12 21Z',
+        'M9.5 9.5A2.5 2.5 0 1 1 13 11.8C12.3 12.2 12 12.7 12 13.5',
+        'M12 17H12.01',
     ],
     plus: [
         'M12 5V19M5 12H19',
@@ -43,7 +42,7 @@ const PATHS = {
     ],
     // Six dots: the handle for dragging a task
     grip: [
-        'M9 5H9.01M15 5H15.01M9 12H9.01M15 12H15.01M9 19H9.01M15 19H15.01',
+        'M8 5H8.01M16 5H16.01M8 12H8.01M16 12H16.01M8 19H8.01M16 19H16.01',
     ],
     download: [
         'M6 20L18 20',
@@ -60,15 +59,6 @@ const PATHS = {
     ],
     check: [
         'M5 13L9 17L19 7',
-    ],
-    close: [
-        'M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426',
-    ],
-    chevronLeft: [
-        'M15 6L9 12L15 18',
-    ],
-    chevronRight: [
-        'M9 6L15 12L9 18',
     ],
 };
 
@@ -97,17 +87,16 @@ export function icon(name, { size = 24, strokeWidth = 1.5, filled = false, inlin
 
 /**
  * A star with a number (or check mark) inside: the priority marker of a focus task.
- * The same markup is used in the task list and in the guide texts.
+ * Used for the numbers in today's focus and for the free places.
  * @param {string|number} content - What to show inside the star
  * @param {Object} [options]
  * @param {number} [options.size=34] - Width and height in px
  * @param {boolean} [options.done=false] - Faded star (a finished task)
  * @param {boolean} [options.empty=false] - Dashed outline: a free place in today's focus
- * @param {boolean} [options.inline=false] - Align with surrounding text
  * @returns {string} HTML markup
  */
-export function numberedStar(content, { size = 34, done = false, empty = false, inline = false } = {}) {
-    const classes = ['priority-badge', done && 'priority-badge-done', empty && 'priority-badge-empty', inline && 'priority-badge-inline']
+export function numberedStar(content, { size = 34, done = false, empty = false } = {}) {
+    const classes = ['priority-badge', done && 'priority-badge-done', empty && 'priority-badge-empty']
         .filter(Boolean).join(' ');
     return `<span class="${classes}" style="--star-size: ${size}px" aria-hidden="true">`
         + icon('star', { size, strokeWidth: empty ? 1.5 : 1, filled: !empty })

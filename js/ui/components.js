@@ -1,10 +1,9 @@
 /**
  * Components
- * Some pieces of markup are used in several views: the header and the assistant box.
- * They are written once as <template> elements in index.html. Wherever a view has
- *     <div data-component="header" data-subtitle="Backlog"></div>
- *     <div data-component="assistant"></div>
- * this module puts a copy of the matching template in its place.
+ * The header is used in every view. It is written once as a <template> in index.html.
+ * Wherever a view has
+ *     <div data-component="header" data-subtitle="Later"></div>
+ * this module puts a copy of the template in its place.
  */
 
 import { mountIcons } from './icons.js';

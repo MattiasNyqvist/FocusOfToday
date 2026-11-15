@@ -1,15 +1,14 @@
 /**
  * Navigation
- * Switching between Today, Later, Done, Help and Settings.
+ * Switching between Today, Later, Done and Settings.
  * Each view is a <div id="{name}View" class="view"> in index.html.
  */
 
 import { renderAll } from './render.js';
-import { showAssistantFor } from './assistant.js';
 
 let currentView = 'focus';
 
-/** Name of the view that is showing: 'focus' | 'backlog' | 'archive' | 'guide' | 'settings' */
+/** Name of the view that is showing: 'focus' | 'backlog' | 'archive' | 'settings' */
 export function getCurrentView() {
     return currentView;
 }
@@ -28,8 +27,10 @@ export function switchView(view) {
         else button.removeAttribute('aria-current');
     });
 
+    // Quick capture belongs to Today only
+    document.getElementById('composer').hidden = view !== 'focus';
+
     renderAll();
-    showAssistantFor(view);
 }
 
 /** Connect the buttons in the bottom navigation. */

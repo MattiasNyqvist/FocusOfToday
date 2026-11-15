@@ -10,7 +10,6 @@ export const STORAGE_KEYS = {
     archive: 'focusArchive_v1',
     settings: 'focusSettings_v1',
     theme: 'theme',
-    assistantHidden: 'assistantHidden',
     lastSeenDate: 'lastSeenDate'
 };
 

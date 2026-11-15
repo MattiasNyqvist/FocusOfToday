@@ -1,6 +1,6 @@
 /**
  * Settings view
- * The focus limit, the assistant switch, the theme and the data export
+ * The focus limit, the theme and the data export
  * (importing is in import-data.js).
  */
 
@@ -8,7 +8,6 @@ import { CONFIG, STORAGE_KEYS, saveSettings } from '../config.js';
 import { exportData, readPref, writePref } from '../storage.js';
 import { notifyDataChanged } from '../events.js';
 import { showToast } from './toast.js';
-import { isAssistantVisible, setAssistantVisible } from './assistant.js';
 
 /** Light or dark appearance. */
 function applyTheme(theme) {
@@ -50,14 +49,6 @@ export function initSettings() {
         CONFIG.maxFocusTasks = Number(slider.value);
         saveSettings();
         notifyDataChanged();
-        showToast('✓ Settings saved');
-    });
-
-    // --- Assistant ---
-    const assistantCheckbox = document.getElementById('showAssistant');
-    assistantCheckbox.checked = isAssistantVisible();
-    assistantCheckbox.addEventListener('change', () => {
-        setAssistantVisible(assistantCheckbox.checked);
         showToast('✓ Settings saved');
     });
 

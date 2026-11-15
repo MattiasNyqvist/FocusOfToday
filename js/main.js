@@ -12,10 +12,10 @@
 import { onDataChanged } from './events.js';
 import { mountComponents } from './ui/components.js';
 import { renderAll } from './ui/render.js';
-import { initNavigation, getCurrentView } from './ui/navigation.js';
-import { initAssistant, showAssistantFor } from './ui/assistant.js';
+import { initNavigation } from './ui/navigation.js';
 import { initSettings } from './ui/settings.js';
 import { initImportData } from './ui/import-data.js';
+import { initHelp } from './ui/help.js';
 import { initTaskInput } from './ui/task-input.js';
 import { checkNewDay, watchForNewDay } from './ui/new-day.js';
 
@@ -25,7 +25,7 @@ initSettings();
 initImportData();
 initNavigation();
 initTaskInput();
-initAssistant();
+initHelp();
 
 // Redraw whenever an action has changed the data
 onDataChanged(renderAll);
@@ -34,4 +34,3 @@ checkNewDay();
 watchForNewDay();
 
 renderAll();
-showAssistantFor(getCurrentView());

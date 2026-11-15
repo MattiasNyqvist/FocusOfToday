@@ -11,7 +11,7 @@ import { showToast } from './toast.js';
 
 /**
  * Ask which focus task should make room for `task`.
- * @param {{id: number, text: string}} task - The brain dump task that was picked
+ * @param {{id: number, text: string}} task - The task that was picked
  */
 export function openSwapDialog(task) {
     // Finished tasks stay: only a task that is still open can give its place away.

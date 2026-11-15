@@ -19,10 +19,9 @@
     --primary-teal: #66b2b2;        /* Active buttons - medium teal */
     --primary-teal-dark: #008080;   /* Active menu items - classic teal */
     --primary-teal-light: #99cccc;  /* Light accents */
-    --tone-guide: #e8f3f3;          /* Guide card - a faint tint on a white background */
+    --tone-bar: #e3f0f0;            /* Behind the quick capture field */
     --tone-focus: #cfe5e5;          /* Today's focus tasks - the strongest tint */
     --header-teal: #006666;         /* Header background - deep teal */
-    --help-bg-teal: #b2d8d8;        /* Help section backgrounds */
 
     /* Neutrals */
     --text-dark: #1F2937;           /* Dark gray text */
@@ -66,10 +65,9 @@ body.dark-mode {
     --primary-teal: #66b2b2;        /* Keep same for consistency */
     --primary-teal-dark: #008080;   /* Classic teal */
     --primary-teal-light: #99cccc;  /* Light teal */
-    --tone-guide: #1a3333;
+    --tone-bar: #1a3535;
     --tone-focus: #123f3f;
     --header-teal: #004d4d;         /* Darker header for dark mode */
-    --help-bg-teal: #336666;        /* Darker help backgrounds */
 
     --text-dark: #F3F4F6;
     --text-light: #9CA3AF;
@@ -174,164 +172,6 @@ body.dark-mode {
 /* The header icon takes the text color (its strokes use currentColor) */
 .app-header svg {
     color: var(--text-on-teal);
-}
-
-/* Assistant Section (step-by-step helper) */
-.assistant-section {
-    padding: 10px 16px;
-    background: var(--bg-white);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-/* The guide itself: a small card with a faint teal tint */
-.assistant-card {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 8px 12px 10px;
-    background: var(--tone-guide);
-    border: 1px solid var(--border-light);
-    border-radius: 6px;
-}
-
-.assistant-section.hidden {
-    display: none;
-}
-
-.assistant-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 24px;
-}
-
-/* < (1) (2) (3) > centered under the title */
-.assistant-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 24px;
-}
-
-/* Same width as the close button so the < (1) (2) > group is truly centered */
-.assistant-top-spacer {
-    width: 28px;
-    flex-shrink: 0;
-}
-
-/* Headset icon: marks this box as the help function */
-.assistant-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary-teal-dark);
-}
-
-body.dark-mode .assistant-icon {
-    color: var(--primary-teal-light);
-}
-
-.assistant-btn {
-    flex-shrink: 0;
-    width: 28px;
-    height: 28px;
-    border: none;
-    border-radius: 50%;
-    background: transparent;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: var(--text-light);
-    transition: all 0.2s;
-}
-
-.assistant-btn:hover:not(:disabled) {
-    background: rgba(0, 0, 0, 0.05);
-    transform: scale(1.1);
-}
-
-.assistant-btn:active:not(:disabled) {
-    transform: scale(0.95);
-}
-
-.assistant-btn:disabled {
-    opacity: 0.3;
-    cursor: default;
-}
-
-.assistant-btn svg {
-    stroke: currentColor;
-}
-
-/* Numbered step buttons between the arrows; the current step is filled */
-.assistant-steps {
-    display: flex;
-    gap: 6px;
-}
-
-.assistant-step-btn {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 1px solid var(--primary-teal-dark);
-    background: transparent;
-    color: var(--primary-teal-dark);
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1;
-    padding: 0;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-}
-
-.assistant-step-btn:hover {
-    background: rgba(0, 128, 128, 0.15);
-}
-
-.assistant-step-btn.active {
-    background: var(--primary-teal-dark);
-    color: var(--text-on-teal);
-}
-
-/* Fixed height: always exactly 3 lines so the box never resizes */
-.assistant-viewport {
-    overflow: hidden;
-    height: 4.2em;
-    font-size: 14px;
-    line-height: 1.4;
-}
-
-/* Fixed title at the top of the box (not part of the sliding step) */
-.assistant-title {
-    flex: 1;
-    font-weight: 600;
-    font-size: 13px;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-light);
-}
-
-.assistant-slide {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    height: 100%;
-}
-
-.assistant-message {
-    flex: 1;
-    color: var(--text-dark);
-}
-
-/* Dark mode adjustments for assistant */
-body.dark-mode .assistant-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
 }
 
 /* Dialogs (<dialog class="modal">) */
@@ -543,19 +383,54 @@ body.dark-mode .modal::backdrop {
     height: 28px;
 }
 
-/* Heading with a counter at the right end: "Add new task          5 of 120" */
+/* Heading with something at the right end: the counter and "?" next to "Today's focus" */
 .section-title-with-count {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
 }
 
+/* The heading text itself keeps the heading style (only small extras like the counter are quiet) */
+.section-title .heading-text {
+    font-weight: inherit;
+    color: inherit;
+}
+
+/* The hint above the capture field while it is idle */
+.composer-hint {
+    position: absolute;
+    top: 9px;
+    left: 16px;
+    right: 16px;
+    font-size: 12px;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.15s;
+    pointer-events: none;
+}
+
+.composer-hint-hidden {
+    opacity: 0;
+}
+
+/* "5 of 120", above the input while it is in use */
 .input-count {
-    font-size: 13px;
+    position: absolute;
+    top: 9px;
+    right: 20px;
+    font-size: 12px;
     font-weight: 400;
     letter-spacing: 0;
-    text-transform: none;
     color: var(--text-light);
+    opacity: 0;
+    transition: opacity 0.15s;
+    pointer-events: none;
+}
+
+.input-count-visible {
+    opacity: 1;
 }
 
 .input-count-full {
@@ -568,13 +443,110 @@ body.dark-mode .modal::backdrop {
     background: var(--bg-white);
 }
 
-/* The brain dump: the input first, then the tasks waiting to be picked */
+/* "Everything else": the tasks waiting to be chosen */
 .task-section-braindump {
     padding-bottom: 24px;
 }
 
-.task-section-braindump .task-input-container {
-    margin-bottom: 8px;
+/* "(7)" behind the heading */
+.list-count {
+    margin-left: 6px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--text-light);
+}
+
+/* The "?" next to the focus heading */
+.help-icon-btn {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: var(--primary-teal-dark);
+    color: var(--text-on-teal);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    transition: background 0.2s, transform 0.1s;
+}
+
+.help-icon-btn:hover {
+    background: var(--header-teal);
+}
+
+.help-icon-btn:active {
+    transform: scale(0.94);
+}
+
+/* Quick capture: a bar above the navigation, on Today only */
+:root {
+    --composer-height: 86px;
+}
+
+.composer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
+    bottom: var(--nav-height);
+    height: var(--composer-height);
+    padding: 30px 0 10px;
+    background: var(--tone-bar);
+    border-top: 1px solid var(--border-light);
+    z-index: 900;
+}
+
+.composer[hidden] {
+    display: none;
+}
+
+.composer .task-input-container {
+    align-items: center;
+}
+
+/* The field has the same color as the plus sign, so it stands out from the bar */
+.composer #taskInput {
+    border: 2px solid var(--primary-teal-dark);
+}
+
+.composer #taskInput:focus {
+    border-color: var(--primary-teal-dark);
+    box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.2);
+}
+
+body.dark-mode .composer #taskInput {
+    border-color: var(--primary-teal-light);
+}
+
+body.dark-mode .composer #taskInput:focus {
+    border-color: var(--primary-teal-light);
+    box-shadow: 0 0 0 3px rgba(153, 204, 204, 0.25);
+}
+
+/* The list on Today scrolls above the bar, not under it */
+#focusView {
+    bottom: calc(var(--nav-height) + var(--composer-height));
+}
+
+/* The help dialog */
+.help-list {
+    margin: 0 0 12px;
+    padding-left: 20px;
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+
+.help-list li {
+    margin-bottom: 10px;
+}
+
+.help-credit {
+    margin: 0 0 20px;
+    font-size: 13px;
+    color: var(--text-light);
 }
 
 .focus-section {
@@ -648,12 +620,6 @@ body.dark-mode .section-title {
 .priority-badge svg {
     width: var(--star-size);
     height: var(--star-size);
-}
-
-/* The same star inside a sentence (guide texts) */
-.priority-badge-inline {
-    display: inline-flex;
-    vertical-align: middle;
 }
 
 /* The number sits on the star's centre, which is a little below the box centre */
@@ -765,7 +731,7 @@ body.dark-mode .section-title {
     align-items: center;
     gap: 8px;
     width: 100%;
-    padding: 6px 16px 6px 7px;
+    padding: 6px 16px 6px 13px;
     border: none;
     background: transparent;
     color: var(--text-light);
@@ -806,9 +772,8 @@ body.dark-mode .priority-badge-empty .priority-number {
     color: var(--primary-teal-light);
 }
 
-/* "Pick" button on a brain dump row, and the same look inside the guide text */
-.task-pick,
-.pick-chip {
+/* "Focus" button on a row of the "Everything else" list */
+.task-pick {
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -839,8 +804,7 @@ body.dark-mode .priority-badge-empty .priority-number {
     stroke: currentColor;
 }
 
-body.dark-mode .task-pick,
-body.dark-mode .pick-chip {
+body.dark-mode .task-pick {
     border-color: var(--primary-teal-light);
     color: var(--primary-teal-light);
 }
@@ -940,7 +904,7 @@ body.dark-mode .task-pick:hover {
 .task-star {
     color: var(--text-dark);
     /* 32px button with a 24px icon/badge: -4px puts it on the 16px gutter,
-       in line with the step circle in the assistant box */
+       in line with the other content */
     margin-left: -4px;
     margin-right: 4px;
 }
@@ -956,7 +920,7 @@ body.dark-mode .task-pick:hover {
 
 /* The priority star is a little larger than the plain star, so it needs less offset */
 .task-priority {
-    margin-left: -6px;
+    margin-left: -2px;
     margin-right: 0;
 }
 
@@ -986,18 +950,18 @@ body.dark-mode .task-pick:hover {
 /* Drag handle at the left edge of a row, in the row's padding */
 .task-grip {
     position: absolute;
-    left: 0;
+    left: 3px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
     color: var(--text-light);
-    opacity: 0.45;
+    opacity: 0.8;
     cursor: grab;
     transition: opacity 0.2s;
 }
 
 .task-item:hover .task-grip {
-    opacity: 0.9;
+    opacity: 1;
 }
 
 .task-item.dragging .task-grip {
@@ -1284,80 +1248,6 @@ body.dark-mode .task-pick:hover {
     transform: scale(0.98);
 }
 
-/* Help view */
-.help-content {
-    padding: 10px 20px 80px;
-}
-
-.help-intro,
-.help-tips {
-    padding: 20px;
-    border-radius: 12px;
-    background: var(--help-bg-teal);
-}
-
-.help-intro {
-    margin-bottom: 20px;
-}
-
-.help-intro h2 {
-    margin: 0 0 12px;
-    font-size: 18px;
-    color: var(--text-dark);
-}
-
-.help-section {
-    margin-bottom: 24px;
-}
-
-.help-section h3,
-.help-tips h3 {
-    margin: 0 0 12px;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-dark);
-}
-
-.help-tips h3 {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.help-tips-icon {
-    color: var(--primary-teal-dark);
-}
-
-.help-card {
-    padding: 16px;
-    border: 1px solid var(--border-light);
-    border-radius: 8px;
-    background: var(--bg-white);
-}
-
-.help-intro p,
-.help-card p {
-    margin: 0 0 12px;
-    line-height: 1.6;
-    color: var(--text-dark);
-}
-
-.help-card-compact p {
-    margin-bottom: 8px;
-}
-
-.help-intro p:last-child,
-.help-card p:last-child {
-    margin-bottom: 0;
-}
-
-.help-tips ul {
-    margin: 0;
-    padding-left: 20px;
-    line-height: 1.8;
-    color: var(--text-dark);
-}
-
 /* Version and copyright at the bottom of Settings */
 .app-footer {
     margin-top: 10px;
@@ -1401,7 +1291,8 @@ body.dark-mode .task-pick:hover {
 }
 
 @media (min-width: 768px) {
-    .bottom-nav {
+    .bottom-nav,
+    .composer {
         max-width: var(--app-max-width);
         left: 50%;
         transform: translateX(-50%);
@@ -1465,13 +1356,6 @@ body.dark-mode .task-pick:hover {
     }
 }
 
-/* Very narrow phones: the guide text needs one more line */
-@media (max-width: 340px) {
-    .assistant-viewport {
-        height: 5.6em;
-    }
-}
-
 /* Small phones: slightly smaller buttons so the task text keeps its room */
 @media (max-width: 400px) {
     .task-star,
@@ -1488,7 +1372,6 @@ body.dark-mode .task-pick:hover {
     }
 
     .task-item {
-        padding-left: 14px;
         padding-right: 12px;
     }
 }

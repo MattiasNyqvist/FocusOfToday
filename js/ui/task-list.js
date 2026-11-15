@@ -1,10 +1,10 @@
 /**
  * Today view
- * Draws today's focus (a fixed number of places) and the brain dump below it.
+ * Draws today's focus (a fixed number of places) and the list "Everything else" below it.
  *
  * Focus tasks are numbered 1..n: number 1 is done first. Places that are still free are
  * drawn as empty numbered slots, so the daily limit is visible before it is reached.
- * Tasks in the brain dump are waiting to be picked.
+ * Tasks on the "Everything else" list are waiting to be picked.
  * Done tasks stay in their list for the rest of the day (struck through, at the bottom)
  * and move to Done the next day.
  */
@@ -18,19 +18,19 @@ import { attachDragAndDrop, previewMove, commitMove, clearPreview, VERTICAL_MOVE
 import { createIconButton, createTextElement, createEditAndDeleteButtons, createSwipeFrame } from './task-row.js';
 import { openSwapDialog } from './swap-dialog.js';
 
-/** Redraw the focus list, the brain dump and the counter next to the focus heading. */
+/** Redraw the focus list, the "Everything else" list and the counter next to the focus heading. */
 export function renderTasks() {
     const tasks = loadTasks();
 
     // Sort is stable: open tasks first, done tasks last, stored order kept inside each group
     const openFirst = (a, b) => Number(a.status === 'done') - Number(b.status === 'done');
     const focusTasks = tasks.filter(t => t.starred).sort(openFirst);
-    const brainDump = tasks.filter(t => !t.starred).sort(openFirst);
+    const onYourMind = tasks.filter(t => !t.starred).sort(openFirst);
 
     renderFocusList(focusTasks);
-    renderBrainDump(brainDump);
+    renderOnYourMind(onYourMind);
     updateFocusCounter(focusTasks.filter(t => t.status === 'done').length, focusTasks.length);
-    updateFocusPrompt(focusTasks.length, brainDump.length);
+    updateFocusPrompt(focusTasks.length, onYourMind.length);
 }
 
 /** "Done / chosen (max N)", for example "1/5 (max 6)". Before anything is chosen: "(max 6)". */
@@ -42,12 +42,12 @@ function updateFocusCounter(doneCount, chosenCount) {
 }
 
 /** The question under the heading. It is only there until the first task is picked. */
-function updateFocusPrompt(chosenCount, brainDumpCount) {
+function updateFocusPrompt(chosenCount, waitingCount) {
     const prompt = document.getElementById('focusPrompt');
     prompt.hidden = chosenCount > 0;
-    prompt.textContent = brainDumpCount === 0
-        ? `What matters most today? Write your tasks in the brain dump below, then pick up to ${CONFIG.maxFocusTasks}.`
-        : `What matters most today? Pick up to ${CONFIG.maxFocusTasks} tasks from your brain dump.`;
+    prompt.textContent = waitingCount === 0
+        ? `What matters most today? Write your tasks below, then pick up to ${CONFIG.maxFocusTasks}.`
+        : `What matters most today? Pick up to ${CONFIG.maxFocusTasks} tasks from the list below.`;
 }
 
 /** The chosen tasks, followed by one empty slot for every place that is still free. */
@@ -66,14 +66,15 @@ function renderFocusList(tasks) {
     }
 }
 
-function renderBrainDump(tasks) {
+function renderOnYourMind(tasks) {
     const container = document.getElementById('allTasksList');
     container.replaceChildren();
+    document.getElementById('brainDumpCount').textContent = tasks.length > 0 ? `(${tasks.length})` : '';
 
     if (tasks.length === 0) {
         const empty = document.createElement('div');
         empty.className = 'empty-state';
-        empty.textContent = 'Nothing here yet. Write down anything that comes to mind.';
+        empty.textContent = 'Nothing here yet. Add your tasks below, then choose what matters today.';
         container.appendChild(empty);
         return;
     }
@@ -81,8 +82,8 @@ function renderBrainDump(tasks) {
     tasks.forEach(task => container.appendChild(createTaskRow(task, null)));
 }
 
-/** Scroll to the brain dump, and start typing there if it is empty. */
-function goToBrainDump() {
+/** Scroll to the "Everything else" list, and start typing if it is empty. */
+function goToWaitingList() {
     const section = document.getElementById('brainDumpSection');
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     if (!section.querySelector('.task-item')) {
@@ -95,9 +96,9 @@ function createEmptySlot(number) {
     const slot = document.createElement('button');
     slot.type = 'button';
     slot.className = 'focus-slot';
-    slot.setAttribute('aria-label', `Free place ${number} in today's focus. Pick a task from your brain dump.`);
+    slot.setAttribute('aria-label', `Free place ${number} in today's focus. Pick a task from the list below.`);
     slot.innerHTML = numberedStar(number, { empty: true }) + '<span class="focus-slot-text">Pick a task</span>';
-    slot.addEventListener('click', goToBrainDump);
+    slot.addEventListener('click', goToWaitingList);
     return slot;
 }
 
@@ -136,14 +137,14 @@ function createLeadingButton(task, priority) {
     return button;
 }
 
-/** "Pick": puts a brain dump task in today's focus. */
+/** "Focus": puts a task from "Everything else" in today's focus. */
 function createPickButton(task) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'task-pick';
     button.title = "Add to today's focus";
     button.setAttribute('aria-label', `Add "${task.text}" to today's focus`);
-    button.innerHTML = icon('star', { size: 14, strokeWidth: 2 }) + '<span>Pick</span>';
+    button.innerHTML = icon('star', { size: 14, strokeWidth: 2 }) + '<span>Focus</span>';
     button.addEventListener('click', (e) => {
         e.stopPropagation();
         pickTask(task);
@@ -156,12 +157,12 @@ function createGrip() {
     const grip = document.createElement('span');
     grip.className = 'task-grip';
     grip.title = 'Drag to reorder';
-    grip.innerHTML = icon('grip', { size: 12, strokeWidth: 3.5 });
+    grip.innerHTML = icon('grip', { size: 14, strokeWidth: 4.5 });
     return grip;
 }
 
 /**
- * One row. `priority` is the task's number in today's focus, or null for a brain dump task.
+ * One row. `priority` is the task's number in today's focus, or null for a task on the "Everything else" list.
  */
 function createTaskRow(task, priority) {
     const isDone = task.status === 'done';
@@ -175,7 +176,7 @@ function createTaskRow(task, priority) {
 
     const text = createTextElement(task);
 
-    // Only focus tasks are worked on, so only they get a check button. A brain dump task that is
+    // Only focus tasks are worked on, so only they get a check button. A waiting task that is
     // already done (from an older version) keeps one so it can be reopened.
     const doneButton = (isFocus || isDone) ? [createIconButton({
         className: 'task-done' + (isDone ? ' is-done' : ''),
@@ -206,7 +207,7 @@ function createTaskRow(task, priority) {
     );
 
     const { wrapper, labelLeft, labelRight } = createSwipeFrame(row, {
-        left: isFocus ? 'Done' : 'Pick',
+        left: isFocus ? 'Done' : 'Focus',
         right: 'Move to Later'
     });
 

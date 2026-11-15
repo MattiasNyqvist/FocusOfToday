@@ -18,38 +18,19 @@
             <!-- Header -->
             <div data-component="header"></div>
 
-            <div data-component="assistant"></div>
-
-            <!-- Today's focus: a fixed number of places, filled by picking tasks from the brain dump -->
+            <!-- Today's focus: a fixed number of places, filled by picking tasks from the list below -->
             <section class="task-section focus-section">
-                <h2 class="section-title">Today's focus <span class="focus-counter" id="focusCounter" title="Finished / chosen focus tasks (and the most you can choose per day)"></span></h2>
+                <h2 class="section-title section-title-with-count">
+                    <span class="heading-text">Today's focus <span class="focus-counter" id="focusCounter" title="Finished / chosen focus tasks (and the most you can choose per day)"></span></span>
+                    <button type="button" class="help-icon-btn" id="helpBtn" aria-label="How it works" title="How it works">?</button>
+                </h2>
                 <p class="focus-prompt" id="focusPrompt" hidden></p>
                 <div class="task-list" id="focusList"></div>
             </section>
 
-            <!-- Brain dump: write everything down here, then pick what matters -->
+            <!-- Everything else: all tasks, waiting to be chosen for today's focus -->
             <section class="task-section task-section-braindump" id="brainDumpSection">
-                <h2 class="section-title section-title-with-count">
-                    Brain dump
-                    <span class="input-count" id="taskInputCount"></span>
-                </h2>
-                <div class="task-input-container">
-                    <input
-                        type="text"
-                        id="taskInput"
-                        aria-label="New task"
-                        aria-describedby="taskInputCount"
-                        placeholder="What's on your mind?"
-                        autocomplete="off"
-                        data-lpignore="true"
-                        data-form-type="other"
-                        data-1p-ignore
-                        data-bwignore
-                    >
-                    <button class="btn-add" id="addTaskBtn" title="Add task" aria-label="Add task" type="button">
-                        <span data-icon="plus" data-size="28" data-stroke="1.5"></span>
-                    </button>
-                </div>
+                <h2 class="section-title">Everything else <span class="list-count" id="brainDumpCount"></span></h2>
                 <div class="task-list" id="allTasksList"></div>
             </section>
         </div>
@@ -58,8 +39,6 @@
         <div id="backlogView" class="view">
             <div data-component="header" data-subtitle="Later"></div>
 
-            <div data-component="assistant"></div>
-
             <div class="task-list" id="backlogList"></div>
         </div>
 
@@ -67,122 +46,7 @@
         <div id="archiveView" class="view">
             <div data-component="header" data-subtitle="Done"></div>
 
-            <div data-component="assistant"></div>
-
             <div class="archive-list" id="archiveList"></div>
-        </div>
-
-        <!-- Guide View -->
-        <div id="guideView" class="view">
-            <div data-component="header" data-subtitle="Help"></div>
-
-            <div class="help-content">
-                <!-- About Ivy Lee Method -->
-                <div class="help-intro">
-                    <h2>
-                        Choose what matters. Finish it.
-                    </h2>
-                    <p>
-                        This is not a list of everything you have to do. It is a place to decide what matters <strong>today</strong>, and to finish it. You write everything down, pick a few tasks, and everything else waits.
-                    </p>
-                    <p>
-                        The idea is the Ivy Lee Method: choose your six most important tasks, do them in order, and move what is left to tomorrow. The number is adjustable.
-                    </p>
-                </div>
-
-                <!-- Today View Guide -->
-                <div class="help-section">
-                    <h3>Today</h3>
-                    <div class="help-card">
-                        <p>
-                            <strong>Today's focus:</strong> The few tasks you have chosen for today, numbered in the order you will do them. The free places are shown as empty slots. The counter next to the heading (for example 4/5 (max 6)) shows how many of your chosen tasks you have finished, and the most you can choose. Always start with number 1.
-                        </p>
-                        <p>
-                            <strong>Brain dump:</strong> Write down everything on your mind here, without judging it. When you know what matters most, click <span class="pick-chip">Pick</span> on a task to move it to today's focus. If the focus is full you are asked which task should give way.
-                        </p>
-                        <p>
-                            <strong>Moving and finishing tasks:</strong><br>
-                            • Click <span class="inline-icon" data-icon="check" data-size="18"></span> or swipe <strong>LEFT</strong> to mark a focus task as done. It stays on your list, struck through, for the rest of the day and moves to Done tomorrow. Click ✓ again to undo.<br>
-                            • Swipe <strong>LEFT</strong> on a brain dump task to pick it.<br>
-                            • Click <span class="inline-icon" data-icon="box" data-size="18"></span> or swipe <strong>RIGHT</strong> to move a task to Later.<br>
-                            • Drag the <span class="inline-icon" data-icon="grip" data-size="18" data-stroke="3"></span> handle up or down (or swipe up or down on a touch screen) to change the order.<br>
-                            • Click the number of a focus task to take it out of today's focus.
-                        </p>
-                        <p>
-                            <strong>Other actions:</strong><br>
-                            • Click <span class="inline-icon" data-icon="pen" data-size="18"></span> to edit<br>
-                            • Click <span class="inline-icon" data-icon="trash" data-size="18"></span> to delete
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Later View Guide -->
-                <div class="help-section">
-                    <h3>Later</h3>
-                    <div class="help-card">
-                        <p>
-                            Tasks that matter, but not today. They wait here without cluttering your day.
-                        </p>
-                        <p>
-                            <strong>Actions:</strong><br>
-                            • Click <span class="inline-icon" data-icon="arrowLeft" data-size="18"></span> or swipe <strong>LEFT</strong> to move it back to Today<br>
-                            • Click <span class="inline-icon" data-icon="pen" data-size="18"></span> to edit<br>
-                            • Click <span class="inline-icon" data-icon="trash" data-size="18"></span> to delete
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Done View Guide -->
-                <div class="help-section">
-                    <h3>Done</h3>
-                    <div class="help-card">
-                        <p>
-                            Finished tasks move here the day after you completed them. Look back at what you have delivered.
-                        </p>
-                        <p>
-                            <strong>Actions:</strong><br>
-                            • Click <span class="inline-icon" data-icon="arrowLeft" data-size="18"></span> or swipe <strong>LEFT</strong> to move it back to Today<br>
-                            • Click <span class="inline-icon" data-icon="pen" data-size="18"></span> to edit<br>
-                            • Click <span class="inline-icon" data-icon="trash" data-size="18"></span> to delete
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Settings Guide -->
-                <div class="help-section">
-                    <h3>Settings</h3>
-                    <div class="help-card help-card-compact">
-                        <p>
-                            <strong>Max focus tasks:</strong> Set how many tasks can be in today's focus (1-10, default is 6). Fewer is better.
-                        </p>
-                        <p>
-                            <strong>New-day review:</strong> The first time you open the app on a new day you decide for each unfinished focus task: keep it in focus or move it to Later. It works the same after a weekend.
-                        </p>
-                        <p>
-                            <strong>Theme:</strong> Choose between light and dark mode.
-                        </p>
-                        <p>
-                            <strong>Export data:</strong> Download all your tasks, Later and Done as a JSON file for backup.
-                        </p>
-                        <p>
-                            <strong>Import data:</strong> Restore a backup made with Export. You are asked to confirm first, because it replaces everything you have now.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Tips -->
-                <div class="help-tips">
-                    <h3>
-                        <span class="inline-icon help-tips-icon" data-icon="bulb" data-size="20"></span>
-                        Pro Tips
-                    </h3>
-                    <ul>
-                                                <li>Keep today's focus to truly important tasks only</li>
-                        <li>Don't be afraid to move tasks to Later - it's better than feeling overwhelmed</li>
-                        <li>Choose your focus the evening before, so tomorrow starts with a clear plan</li>
-                    </ul>
-                </div>
-            </div>
         </div>
 
         <!-- Settings View -->
@@ -203,10 +67,11 @@
                         </div>
                     </div>
                     <div class="setting-item">
-                        <label>
-                            <input type="checkbox" id="showAssistant" checked>
-                            Show the step-by-step guide (on Today, Later and Done)
-                        </label>
+                        <label>Help:</label>
+                        <button type="button" class="theme-button" id="openHelpBtn">
+                            <span class="inline-icon" data-icon="help" data-size="18"></span>
+                            How it works
+                        </button>
                     </div>
                     <div class="setting-item">
                         <label>Theme:</label>
@@ -254,11 +119,34 @@
                 <!-- Version and Copyright Info -->
                 <div class="app-footer">
                     <p>Version: 1.0</p>
-                    <p>Build: 20261115.19</p>
+                    <p>Build: 20261115.31</p>
                     <p class="app-footer-copyright">Copyright © 2025–2026 Nyqvist. All rights reserved.</p>
                     <p><a href="mailto:contact@nyqvist.net">contact@nyqvist.net</a></p>
                     <p><a href="https://www.nyqvist.net" target="_blank" rel="noopener">www.nyqvist.net</a></p>
                 </div>
+            </div>
+        </div>
+
+        <!-- Quick capture: always within reach on Today, above the navigation -->
+        <div class="composer" id="composer">
+            <span class="composer-hint" id="composerHint">Add a task, then decide if it belongs in today's focus.</span>
+            <span class="input-count" id="taskInputCount"></span>
+            <div class="task-input-container">
+                <input
+                    type="text"
+                    id="taskInput"
+                    aria-label="New task"
+                    aria-describedby="composerHint taskInputCount"
+                    placeholder="Add a task ..."
+                    autocomplete="off"
+                    data-lpignore="true"
+                    data-form-type="other"
+                    data-1p-ignore
+                    data-bwignore
+                >
+                <button class="btn-add" id="addTaskBtn" title="Add task" aria-label="Add task" type="button">
+                    <span data-icon="plus" data-size="28" data-stroke="1.5"></span>
+                </button>
             </div>
         </div>
 
@@ -300,16 +188,6 @@
                 </span>
                 <span class="nav-label">Done</span>
             </button>
-            <button class="nav-btn" data-view="guide">
-                <span class="nav-icon">
-                    <svg width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M9 9C9 5.49997 14.5 5.5 14.5 9C14.5 11.5 12 10.9999 12 13.9999" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M12 18.01L12.01 17.9989" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </span>
-                <span class="nav-label">Help</span>
-            </button>
             <button class="nav-btn" data-view="settings">
                 <span class="nav-icon">
                     <svg width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -329,30 +207,8 @@
                 <h1>Focus of Today <span class="header-subtitle"></span></h1>
                 <span data-icon="logo" data-size="35" data-stroke="1.2" aria-hidden="true"></span>
             </div>
-            <p class="app-tagline">Choose what matters. Finish it.</p>
+            <p class="app-tagline">Ivy Lee – Make the important happen today.</p>
         </header>
-    </template>
-
-    <template id="assistantTemplate">
-        <div class="assistant-section">
-            <div class="assistant-card">
-                <div class="assistant-top">
-                    <span class="assistant-top-spacer assistant-icon" data-icon="bulb" data-size="22" aria-hidden="true"></span>
-                    <div class="assistant-title">Step-by-step guide</div>
-                    <button type="button" class="assistant-btn assistant-close" aria-label="Close assistant"><span data-icon="close" data-size="20"></span></button>
-                </div>
-                <div class="assistant-nav">
-                    <button type="button" class="assistant-btn assistant-prev" aria-label="Previous step"><span data-icon="chevronLeft" data-size="20"></span></button>
-                    <div class="assistant-steps"></div>
-                    <button type="button" class="assistant-btn assistant-next" aria-label="Next step"><span data-icon="chevronRight" data-size="20"></span></button>
-                </div>
-                <div class="assistant-viewport">
-                    <div class="assistant-slide">
-                        <div class="assistant-message" aria-live="polite"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </template>
 
     <!-- Asks what to do with unfinished focus tasks on a new day (see js/ui/new-day.js) -->
@@ -371,6 +227,20 @@
             <button type="button" id="importCancel" class="modal-button">Cancel</button>
             <button type="button" id="importConfirm" class="modal-button modal-button-primary">Replace data</button>
         </div>
+    </dialog>
+
+    <!-- "How it works": a short explanation, opened from the ? next to the heading or from Settings (see js/ui/help.js) -->
+    <dialog id="helpDialog" class="modal" aria-labelledby="helpTitle">
+        <h2 id="helpTitle" class="newday-title">How it works</h2>
+        <ul class="help-list">
+            <li><strong>Choose what matters.</strong> Pick up to <span class="help-max">6</span> tasks for today and do them in order, starting with number 1.</li>
+            <li><strong>Everything else waits.</strong> Add it under "Everything else", or send it to Later. Nothing is lost.</li>
+            <li><strong>Finish it.</strong> Done tasks move to Done tomorrow. Unfinished focus tasks are reviewed each new day.</li>
+            <li><strong>Buttons and swipes.</strong> Every swipe has a button too. Swipe left to finish a task or add it to your focus, right to send it to Later.</li>
+            <li><strong>Your data stays on this device.</strong> Use Settings &rarr; Export to keep a backup.</li>
+        </ul>
+        <p class="help-credit">Inspired by the Ivy Lee Method.</p>
+        <button type="button" id="helpClose" class="modal-button modal-button-primary">Got it</button>
     </dialog>
 
     <!-- Shown when today's focus is full and another task is picked (see js/ui/swap-dialog.js) -->

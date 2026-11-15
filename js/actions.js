@@ -50,7 +50,7 @@ export function deleteTask(list, id) {
 /**
  * Add a task to, or remove it from, today's focus.
  * New focus tasks go after the existing ones (they get the next priority number).
- * Removed ones go to the top of the brain dump.
+ * Removed ones go to the top of the "Everything else" list.
  */
 export function toggleFocus(id) {
     const tasks = storage.loadTasks();
@@ -82,13 +82,13 @@ export function toggleFocus(id) {
 
     storage.saveTasks(tasks);
     notifyDataChanged();
-    showToast(addingToFocus ? '⭐ Added to today\'s focus' : '↩ Back in the brain dump');
+    showToast(addingToFocus ? '⭐ Added to today\'s focus' : '↩ Back on your list');
 }
 
 /**
  * Take a task out of today's focus and put another one in its place (same number).
  * @param {number} outId - The focus task that leaves
- * @param {number} inId - The brain dump task that takes its place
+ * @param {number} inId - The task from "Everything else" that takes its place
  */
 export function swapFocus(outId, inId) {
     const tasks = storage.loadTasks();
@@ -102,7 +102,7 @@ export function swapFocus(outId, inId) {
 
     storage.saveTasks(tasks);
     notifyDataChanged();
-    showToast('⇄ Swapped. The other task is back in the brain dump');
+    showToast('⇄ Swapped. The other task is back on your list');
 }
 
 /**
