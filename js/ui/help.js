@@ -1,28 +1,44 @@
 /**
- * Help ("How it works")
- * A short explanation in a dialog. It is opened from the ? next to the focus heading and
- * from Settings. It replaces the step-by-step guide: the interface is meant to explain
- * itself, and this is only a place to look things up.
+ * Help dialogs
+ *  - "How it works": a short explanation of the app. Opened from the ? next to the focus heading
+ *    and from Settings.
+ *  - "The Ivy Lee Method": the method itself, not the app. Opened from the link in the tagline,
+ *    which is in the header of every view.
+ * They replace the step-by-step guide: the interface is meant to explain itself, and these
+ * are only places to look things up.
  */
 
 import { CONFIG } from '../config.js';
 
-/** Connect the buttons that open and close the help dialog. Call once at start. */
-export function initHelp() {
-    const dialog = document.getElementById('helpDialog');
-
-    const open = () => {
-        // The limit can be changed in Settings, so it is filled in each time
-        dialog.querySelector('.help-max').textContent = String(CONFIG.maxFocusTasks);
-        dialog.showModal();
-    };
-
-    document.getElementById('helpBtn').addEventListener('click', open);
-    document.getElementById('openHelpBtn').addEventListener('click', open);
-    document.getElementById('helpClose').addEventListener('click', () => dialog.close());
-
-    // A click on the dimmed area around the dialog closes it too
+/** Close a dialog when the dimmed area around it is clicked. */
+function closeOnBackdropClick(dialog) {
     dialog.addEventListener('click', (event) => {
         if (event.target === dialog) dialog.close();
     });
+}
+
+/** Connect the buttons that open and close the help dialogs. Call once at start. */
+export function initHelp() {
+    // --- How it works ---
+    const helpDialog = document.getElementById('helpDialog');
+
+    const openHelp = () => {
+        // The limit can be changed in Settings, so it is filled in each time
+        helpDialog.querySelector('.help-max').textContent = String(CONFIG.maxFocusTasks);
+        helpDialog.showModal();
+    };
+
+    document.getElementById('helpBtn').addEventListener('click', openHelp);
+    document.getElementById('openHelpBtn').addEventListener('click', openHelp);
+    document.getElementById('helpClose').addEventListener('click', () => helpDialog.close());
+    closeOnBackdropClick(helpDialog);
+
+    // --- The Ivy Lee Method ---
+    // The header (and so the link) exists once in every view
+    const methodDialog = document.getElementById('methodDialog');
+
+    document.querySelectorAll('.method-link').forEach(link =>
+        link.addEventListener('click', () => methodDialog.showModal()));
+    document.getElementById('methodClose').addEventListener('click', () => methodDialog.close());
+    closeOnBackdropClick(methodDialog);
 }

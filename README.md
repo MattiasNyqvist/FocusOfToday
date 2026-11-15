@@ -33,6 +33,8 @@ There is no build step and there are no dependencies: edit a file and reload the
 - **Later** (the backlog) holds tasks that matter, but not today.
 - The first time the app is opened on a new day (also after a weekend), the **new-day review**
   asks what to do with focus tasks that are still open: keep them or move them to **Later**.
+- **Ivy Lee Method** in the tagline is a link. It opens a short dialog about the method itself (not about
+  the app), for people who do not know it.
 - There is no tutorial or Help page. The screen explains itself (empty slots, the **+ Focus** button, the swap
   dialog), and a **?** next to the focus heading opens a short "How it works" dialog (also in Settings).
 - Quick capture sits in a bar above the navigation on Today, so a task can be added from anywhere
@@ -70,7 +72,7 @@ js/
     row-menu.js       The ... button of a row and the menu it opens.
     gestures.js       Swipe handling (touch). Every swipe also has a button on the row.
     reorder.js        Reordering: swipe up/down (touch) and drag and drop by the grip (mouse).
-    help.js           The "How it works" dialog.
+    help.js           The "How it works" dialog and the "The Ivy Lee Method" dialog.
     new-day.js        The new-day review dialog.
     settings.js       Settings view (focus limit, theme, export).
     import-data.js    Restores a backup (checked first, confirmed by the user).

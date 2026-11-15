@@ -20,6 +20,7 @@
     --primary-teal-dark: #008080;   /* Active menu items - classic teal */
     --primary-teal-light: #99cccc;  /* Light accents */
     --button-ring: rgba(75, 85, 99, 0.45);   /* Thin ring around the round buttons on a row */
+    --line-accent: rgba(0, 128, 128, 0.5);   /* The two lines that frame Everything else: teal, but lighter than the field border */
     --tone-bar: #e3f0f0;            /* Behind the quick capture field */
     --tone-focus: #cfe5e5;          /* Today's focus tasks - the strongest tint */
     --header-teal: #006666;         /* Header background - deep teal */
@@ -67,6 +68,7 @@ body.dark-mode {
     --primary-teal-dark: #008080;   /* Classic teal */
     --primary-teal-light: #99cccc;  /* Light teal */
     --button-ring: rgba(156, 163, 175, 0.5);
+    --line-accent: rgba(153, 204, 204, 0.5);
     --tone-bar: #1a3535;
     --tone-focus: #123f3f;
     --header-teal: #004d4d;         /* Darker header for dark mode */
@@ -164,6 +166,32 @@ body.dark-mode {
     letter-spacing: 0.4px;
     color: var(--primary-teal-light);
     text-wrap: balance;   /* if it must wrap, split it evenly instead of leaving one word alone */
+}
+
+/* "Ivy Lee Method" in the tagline: a button that looks like a link. An invisible area around
+   the text makes it easier to tap without making the line any higher. */
+.method-link {
+    position: relative;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--text-on-teal);
+    font: inherit;
+    letter-spacing: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.method-link::after {
+    content: '';
+    position: absolute;
+    inset: -12px -6px;
+}
+
+.method-link:hover {
+    text-decoration-thickness: 2px;
 }
 
 /* Small phones: slightly tighter, so the tagline fits on one line where possible */
@@ -460,11 +488,7 @@ body.dark-mode .modal::backdrop {
    separates it from today's focus. */
 .task-section-braindump {
     padding-bottom: 24px;
-    border-top: 2px solid var(--primary-teal-dark);
-}
-
-body.dark-mode .task-section-braindump {
-    border-top-color: var(--primary-teal-light);
+    border-top: 1px solid var(--line-accent);
 }
 
 /* "(7)" behind the heading */
@@ -514,16 +538,12 @@ body.dark-mode .task-section-braindump {
     height: var(--composer-height);
     padding: 30px 0 10px;
     background: var(--tone-bar);
-    border-top: 2px solid var(--primary-teal-dark);
+    border-top: 1px solid var(--line-accent);
     z-index: 900;
 }
 
 .composer[hidden] {
     display: none;
-}
-
-body.dark-mode .composer {
-    border-top-color: var(--primary-teal-light);
 }
 
 .composer .task-input-container {
@@ -532,7 +552,7 @@ body.dark-mode .composer {
 
 /* The field has the same color as the plus sign, so it stands out from the bar */
 .composer #taskInput {
-    border: 2px solid var(--primary-teal-dark);
+    border: 1.5px solid var(--primary-teal-dark);
 }
 
 .composer #taskInput:focus {
@@ -554,9 +574,34 @@ body.dark-mode .composer #taskInput:focus {
     bottom: calc(var(--nav-height) + var(--composer-height));
 }
 
-/* The help dialog opens with the heading in focus, so it starts at the top */
-#helpTitle:focus {
+/* The dialogs open with the heading in focus, so they start at the top */
+#helpTitle:focus,
+#methodTitle:focus {
     outline: none;
+}
+
+/* The Ivy Lee Method dialog */
+.method-intro {
+    margin: 0 0 14px;
+    color: var(--text-light);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.method-list {
+    margin: 0 0 20px;
+    padding-left: 22px;
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+
+.method-list li {
+    margin-bottom: 10px;
+}
+
+.method-list li::marker {
+    color: var(--primary-teal-dark);
+    font-weight: 700;
 }
 
 /* The help dialog */
