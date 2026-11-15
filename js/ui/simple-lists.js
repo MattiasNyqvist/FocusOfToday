@@ -1,18 +1,18 @@
 /**
  * Later (backlog) and Done (archive) views
- * Both lists look alike: a row with the task text and buttons to move it back to
- * Today, edit it or delete it. Swiping a row to the left also moves it back to Today.
+ * Both lists look alike: a row with the task text, a button to move it back to
+ * Today and a "..." menu (edit, delete). Swiping a row to the left also moves it back to Today.
  */
 
 import { LIST, loadBacklog, loadArchive } from '../storage.js';
 import { returnToToday } from '../actions.js';
 import { icon } from './icons.js';
 import { attachSwipe, slideOut } from './gestures.js';
-import { createIconButton, createTextElement, createEditAndDeleteButtons, createSwipeFrame } from './task-row.js';
+import { createIconButton, createTextElement, createRowMenu, createSwipeFrame } from './task-row.js';
 
 export function renderBacklog() {
     const emptyContent = document.createElement('span');
-    emptyContent.innerHTML = icon('box', { inline: true }) + ' Nothing here. Tasks that can wait go here.';
+    emptyContent.innerHTML = icon('box', { inline: true }) + ' Nothing here yet. Send a task here from the \u22EF menu or by swiping it right.';
 
     renderSimpleList({
         containerId: 'backlogList',
@@ -80,7 +80,7 @@ function renderSimpleList({ containerId, list, tasks, rowClass, emptyContent, cr
                 iconName: 'arrowLeft',
                 onClick: () => returnToToday(list, task.id)
             }),
-            ...createEditAndDeleteButtons(list, task, text)
+            createRowMenu(list, task, text)
         );
 
         const { wrapper, labelLeft } = createSwipeFrame(row, { left: 'Move to Today' });

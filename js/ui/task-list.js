@@ -2,8 +2,9 @@
  * Today view
  * Draws today's focus (a fixed number of places) and the list "Everything else" below it.
  *
- * Focus tasks are numbered 1..n: number 1 is done first. Places that are still free are
- * drawn as empty numbered slots, so the daily limit is visible before it is reached.
+ * Focus tasks are numbered 1..n by rank: the user ranks them by importance.
+ * Places that are still free are drawn as empty numbered slots, so the daily limit is
+ * visible before it is reached.
  * Tasks on the "Everything else" list are waiting to be picked.
  * Done tasks stay in their list for the rest of the day (struck through, at the bottom)
  * and move to Done the next day.
@@ -15,7 +16,7 @@ import { toggleDone, toggleFocus, sendToBacklog } from '../actions.js';
 import { icon, numberedStar } from './icons.js';
 import { attachSwipe, slideOut } from './gestures.js';
 import { attachDragAndDrop, previewMove, commitMove, clearPreview, VERTICAL_MOVE_THRESHOLD } from './reorder.js';
-import { createIconButton, createTextElement, createEditAndDeleteButtons, createSwipeFrame } from './task-row.js';
+import { createIconButton, createTextElement, createRowMenu, createSwipeFrame } from './task-row.js';
 import { openSwapDialog } from './swap-dialog.js';
 
 /** Redraw the focus list, the "Everything else" list and the counter next to the focus heading. */
@@ -33,12 +34,17 @@ export function renderTasks() {
     updateFocusPrompt(focusTasks.length, onYourMind.length);
 }
 
-/** "Done / chosen (max N)", for example "1/5 (max 6)". Before anything is chosen: "(max 6)". */
+/**
+ * "1 of 2 done (max 6 tasks)": how many of the chosen tasks are finished, and how many may be
+ * chosen. Before anything is chosen the line is hidden: the question below the heading says it.
+ */
 function updateFocusCounter(doneCount, chosenCount) {
     const counter = document.getElementById('focusCounter');
-    const max = document.createElement('span');
-    max.textContent = chosenCount > 0 ? ` (max ${CONFIG.maxFocusTasks})` : `(max ${CONFIG.maxFocusTasks})`;
-    counter.replaceChildren(...(chosenCount > 0 ? [`${doneCount}/${chosenCount}`] : []), max);
+    counter.hidden = chosenCount === 0;
+
+    const progress = document.createElement('strong');
+    progress.textContent = `${doneCount} of ${chosenCount} done`;
+    counter.replaceChildren(progress, ` (max ${CONFIG.maxFocusTasks} tasks)`);
 }
 
 /** The question under the heading. It is only there until the first task is picked. */
@@ -46,8 +52,8 @@ function updateFocusPrompt(chosenCount, waitingCount) {
     const prompt = document.getElementById('focusPrompt');
     prompt.hidden = chosenCount > 0;
     prompt.textContent = waitingCount === 0
-        ? `What matters most today? Write your tasks below, then pick up to ${CONFIG.maxFocusTasks}.`
-        : `What matters most today? Pick up to ${CONFIG.maxFocusTasks} tasks from the list below.`;
+        ? `What matters most today? Write your tasks below, then choose up to ${CONFIG.maxFocusTasks}.`
+        : `What matters most today? Tap "+ Focus" on up to ${CONFIG.maxFocusTasks} tasks below.`;
 }
 
 /** The chosen tasks, followed by one empty slot for every place that is still free. */
@@ -96,8 +102,8 @@ function createEmptySlot(number) {
     const slot = document.createElement('button');
     slot.type = 'button';
     slot.className = 'focus-slot';
-    slot.setAttribute('aria-label', `Free place ${number} in today's focus. Pick a task from the list below.`);
-    slot.innerHTML = numberedStar(number, { empty: true }) + '<span class="focus-slot-text">Pick a task</span>';
+    slot.setAttribute('aria-label', `Free place ${number} in today's focus. Choose a task from the list below.`);
+    slot.innerHTML = numberedStar(number, { empty: true }) + '<span class="focus-slot-text">Add a focus task</span>';
     slot.addEventListener('click', goToWaitingList);
     return slot;
 }
@@ -144,7 +150,7 @@ function createPickButton(task) {
     button.className = 'task-pick';
     button.title = "Add to today's focus";
     button.setAttribute('aria-label', `Add "${task.text}" to today's focus`);
-    button.innerHTML = icon('star', { size: 14, strokeWidth: 2 }) + '<span>Focus</span>';
+    button.innerHTML = icon('plus', { size: 14, strokeWidth: 3 }) + '<span>Focus</span>';
     button.addEventListener('click', (e) => {
         e.stopPropagation();
         pickTask(task);
@@ -176,34 +182,33 @@ function createTaskRow(task, priority) {
 
     const text = createTextElement(task);
 
-    // Only focus tasks are worked on, so only they get a check button. A waiting task that is
-    // already done (from an older version) keeps one so it can be reopened.
-    const doneButton = (isFocus || isDone) ? [createIconButton({
+    // The check button is on every row: a quick task (a phone call, an errand) can be finished
+    // without taking a place in today's focus. Only focus tasks count in the counter.
+    const doneButton = createIconButton({
         className: 'task-done' + (isDone ? ' is-done' : ''),
         label: isDone ? 'Mark as not done' : 'Mark as done',
         iconName: 'check',
         size: 22,
         onClick: () => toggleDone(task.id, row)
-    })] : [];
+    });
 
-    // Open tasks can be dragged (the grip shows it) and sent to Later with a button.
-    const openTaskParts = isDone ? [] : [
-        ...(isFocus ? [] : [createPickButton(task)]),
-        createIconButton({
-            className: 'task-move',
-            label: 'Move to Later',
-            iconName: 'box',
-            onClick: () => sendToBacklog(task.id)
-        })
-    ];
+    // The "..." menu holds the rest. A finished task cannot be sent to Later.
+    const menuItems = isDone ? [] : [{
+        action: 'later',
+        label: 'Move to Later',
+        iconName: 'box',
+        onSelect: () => sendToBacklog(task.id)
+    }];
 
     row.append(
         ...(isDone ? [] : [createGrip()]),
         ...(isFocus ? [createLeadingButton(task, priority)] : []),
         text,
-        ...doneButton,
-        ...openTaskParts,
-        ...createEditAndDeleteButtons(LIST.TASKS, task, text)
+        // "+ Focus" comes before the check button, so the check button and the menu button are in
+        // the same place on every row, in today's focus and in Everything else
+        ...(isFocus || isDone ? [] : [createPickButton(task)]),
+        doneButton,
+        createRowMenu(LIST.TASKS, task, text, menuItems)
     );
 
     const { wrapper, labelLeft, labelRight } = createSwipeFrame(row, {

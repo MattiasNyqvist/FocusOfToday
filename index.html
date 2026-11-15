@@ -21,7 +21,7 @@
             <!-- Today's focus: a fixed number of places, filled by picking tasks from the list below -->
             <section class="task-section focus-section">
                 <h2 class="section-title section-title-with-count">
-                    <span class="heading-text">Today's focus <span class="focus-counter" id="focusCounter" title="Finished / chosen focus tasks (and the most you can choose per day)"></span></span>
+                    <span class="heading-text">Today's focus<span class="focus-counter" id="focusCounter" title="Finished and chosen focus tasks, and the most you can choose per day" hidden></span></span>
                     <button type="button" class="help-icon-btn" id="helpBtn" aria-label="How it works" title="How it works">?</button>
                 </h2>
                 <p class="focus-prompt" id="focusPrompt" hidden></p>
@@ -119,7 +119,7 @@
                 <!-- Version and Copyright Info -->
                 <div class="app-footer">
                     <p>Version: 1.0</p>
-                    <p>Build: 20261115.31</p>
+                    <p>Build: 20261115.40</p>
                     <p class="app-footer-copyright">Copyright © 2025–2026 Nyqvist. All rights reserved.</p>
                     <p><a href="mailto:contact@nyqvist.net">contact@nyqvist.net</a></p>
                     <p><a href="https://www.nyqvist.net" target="_blank" rel="noopener">www.nyqvist.net</a></p>
@@ -207,7 +207,7 @@
                 <h1>Focus of Today <span class="header-subtitle"></span></h1>
                 <span data-icon="logo" data-size="35" data-stroke="1.2" aria-hidden="true"></span>
             </div>
-            <p class="app-tagline">Ivy Lee – Make the important happen today.</p>
+            <p class="app-tagline">Ivy Lee Method – Make the important happen today.</p>
         </header>
     </template>
 
@@ -231,12 +231,14 @@
 
     <!-- "How it works": a short explanation, opened from the ? next to the heading or from Settings (see js/ui/help.js) -->
     <dialog id="helpDialog" class="modal" aria-labelledby="helpTitle">
-        <h2 id="helpTitle" class="newday-title">How it works</h2>
+        <h2 id="helpTitle" class="newday-title" tabindex="-1" autofocus>How it works</h2>
         <ul class="help-list">
-            <li><strong>Choose what matters.</strong> Pick up to <span class="help-max">6</span> tasks for today and do them in order, starting with number 1.</li>
-            <li><strong>Everything else waits.</strong> Add it under "Everything else", or send it to Later. Nothing is lost.</li>
-            <li><strong>Finish it.</strong> Done tasks move to Done tomorrow. Unfinished focus tasks are reviewed each new day.</li>
-            <li><strong>Buttons and swipes.</strong> Every swipe has a button too. Swipe left to finish a task or add it to your focus, right to send it to Later.</li>
+            <li><strong>Brain dump.</strong> Write down everything on your mind in the bar at the bottom. It all starts in Everything else.</li>
+            <li><strong>Prioritise today.</strong> Decide what should be done today: tap <strong>+ Focus</strong> on up to <span class="help-max">6</span> tasks. Then rank them by importance. The number shows the rank, and you change it by swiping a task up or down, or by dragging its &#8942;&#8942; handle with a mouse. To take a task out of today's focus, tap its number.</li>
+            <li><strong>Finish it.</strong> Tick &#10003; when a task is done. A quick task, like a phone call, can be ticked straight from Everything else without taking a place in your focus. Done tasks move to Done tomorrow, and unfinished focus tasks are reviewed each new day.</li>
+            <li><strong>Later.</strong> Something that matters, but not today? Send it to Later from the &hellip; menu. Nothing is lost.</li>
+            <li><strong>Swipe.</strong> Swipe a task left to finish it (in Everything else: to add it to your focus) and right to send it to Later. In Later and Done, swipe left to move a task back to Today.</li>
+            <li><strong>The &hellip; menu</strong> on each task has Move to Later, Edit and Delete. Swiping left or right also has a button.</li>
             <li><strong>Your data stays on this device.</strong> Use Settings &rarr; Export to keep a backup.</li>
         </ul>
         <p class="help-credit">Inspired by the Ivy Lee Method.</p>

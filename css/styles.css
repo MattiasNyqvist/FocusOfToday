@@ -161,6 +161,15 @@ body.dark-mode {
     font-size: 13px;
     letter-spacing: 0.4px;
     color: var(--primary-teal-light);
+    text-wrap: balance;   /* if it must wrap, split it evenly instead of leaving one word alone */
+}
+
+/* Small phones: slightly tighter, so the tagline fits on one line where possible */
+@media (max-width: 380px) {
+    .app-tagline {
+        font-size: 12.5px;
+        letter-spacing: 0.2px;
+    }
 }
 
 .header-subtitle {
@@ -178,6 +187,8 @@ body.dark-mode {
 .modal {
     width: calc(100% - 40px);
     max-width: 440px;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
     margin: auto;
     padding: 32px 24px;
     border: none;
@@ -443,9 +454,15 @@ body.dark-mode .modal::backdrop {
     background: var(--bg-white);
 }
 
-/* "Everything else": the tasks waiting to be chosen */
+/* "Everything else": the tasks waiting to be chosen. A firm line in the color of the capture field
+   separates it from today's focus. */
 .task-section-braindump {
     padding-bottom: 24px;
+    border-top: 2px solid var(--primary-teal-dark);
+}
+
+body.dark-mode .task-section-braindump {
+    border-top-color: var(--primary-teal-light);
 }
 
 /* "(7)" behind the heading */
@@ -495,12 +512,16 @@ body.dark-mode .modal::backdrop {
     height: var(--composer-height);
     padding: 30px 0 10px;
     background: var(--tone-bar);
-    border-top: 1px solid var(--border-light);
+    border-top: 2px solid var(--primary-teal-dark);
     z-index: 900;
 }
 
 .composer[hidden] {
     display: none;
+}
+
+body.dark-mode .composer {
+    border-top-color: var(--primary-teal-light);
 }
 
 .composer .task-input-container {
@@ -529,6 +550,11 @@ body.dark-mode .composer #taskInput:focus {
 /* The list on Today scrolls above the bar, not under it */
 #focusView {
     bottom: calc(var(--nav-height) + var(--composer-height));
+}
+
+/* The help dialog opens with the heading in focus, so it starts at the top */
+#helpTitle:focus {
+    outline: none;
 }
 
 /* The help dialog */
@@ -572,18 +598,24 @@ body.dark-mode .section-title {
     color: var(--text-light);
 }
 
-/* x/6 counter behind "Today's Focus Tasks" */
+/* Progress under the "Today's focus" heading: "1 of 2 done (max 6 tasks)" */
 .section-title .focus-counter {
-    margin-left: 6px;
-    font-weight: 700;
-    color: var(--header-teal);
+    display: block;
+    margin-top: 2px;
+    font-size: 13px;
+    font-weight: 400;
     letter-spacing: 0;
+    text-transform: none;
+    color: var(--text-light);
 }
 
-/* The "(max 6)" part: quieter and not in capitals like the heading */
-.section-title .focus-counter span {
-    text-transform: none;
-    font-size: 0.9em;
+.section-title .focus-counter[hidden] {
+    display: none;
+}
+
+.section-title .focus-counter strong {
+    font-weight: 700;
+    color: var(--header-teal);
 }
 
 /* Task List */
@@ -650,10 +682,6 @@ body.dark-mode .section-title {
 .task-item.task-done-state .task-text {
     text-decoration: line-through;
     color: var(--text-light);
-}
-
-.task-item.task-done-state .task-edit {
-    opacity: 0.5;
 }
 
 /* Done: the same filled star, faded, with a check mark. It still counts as part of today's focus. */
@@ -875,9 +903,8 @@ body.dark-mode .task-pick:hover {
 /* Task Action Buttons - Base Styles */
 .task-star,
 .task-move,
-.task-edit,
-.task-done,
-.task-delete {
+.task-menu-btn,
+.task-done {
     width: 32px;
     height: 32px;
     border: none;
@@ -894,9 +921,8 @@ body.dark-mode .task-pick:hover {
 
 .task-star:hover,
 .task-move:hover,
-.task-edit:hover,
-.task-done:hover,
-.task-delete:hover {
+.task-menu-btn:hover,
+.task-done:hover {
     transform: scale(1.1);
 }
 
@@ -924,12 +950,75 @@ body.dark-mode .task-pick:hover {
     margin-right: 0;
 }
 
-/* Space between the action icons, so a tap on one does not hit its neighbour.
-   Delete gets the most room: it is the one that is hardest to undo. */
+/* Space between the buttons of a row, so a tap on one does not hit its neighbour */
 .task-done,
 .task-move,
-.task-edit {
+.task-menu-btn {
     margin-left: 4px;
+}
+
+/* The "..." button */
+.task-menu-btn {
+    color: var(--text-light);
+}
+
+.task-menu-btn:hover,
+.task-menu-btn[aria-expanded="true"] {
+    color: var(--primary-teal-dark);
+    background: rgba(102, 178, 178, 0.15);
+}
+
+.task-menu-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* The menu that opens from it. It floats above the page, so no list can clip it. */
+.row-menu {
+    position: fixed;
+    z-index: 1100;
+    min-width: 180px;
+    padding: 6px;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.row-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-dark);
+    font: inherit;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.row-menu-item:hover,
+.row-menu-item:focus-visible {
+    background: rgba(0, 128, 128, 0.1);
+}
+
+.row-menu-item svg {
+    flex-shrink: 0;
+    color: var(--text-light);
+}
+
+.row-menu-item-danger,
+.row-menu-item-danger svg {
+    color: var(--delete-red);
+}
+
+.row-menu-item-danger:hover {
+    background: rgba(239, 68, 68, 0.1);
 }
 
 /* Move Button (to backlog / back to Today) - same look as edit */
@@ -966,37 +1055,6 @@ body.dark-mode .task-pick:hover {
 
 .task-item.dragging .task-grip {
     cursor: grabbing;
-}
-
-/* Edit Button - Specific Styles */
-.task-edit {
-    color: var(--text-light);
-    margin-right: 12px;
-}
-
-.task-edit:hover {
-    color: var(--primary-teal);
-    background: rgba(102, 178, 178, 0.1);
-}
-
-.task-edit svg {
-    width: 20px;
-    height: 20px;
-}
-
-/* Delete Button - Specific Styles */
-.task-delete {
-    color: var(--text-light);
-}
-
-.task-delete:hover {
-    color: var(--delete-red);
-    background: rgba(244, 67, 54, 0.1);
-}
-
-.task-delete svg {
-    width: 20px;
-    height: 20px;
 }
 
 /* Swipe Background for task-item-wrapper */
@@ -1360,15 +1418,10 @@ body.dark-mode .task-pick:hover {
 @media (max-width: 400px) {
     .task-star,
     .task-move,
-    .task-edit,
-    .task-done,
-    .task-delete {
+    .task-menu-btn,
+    .task-done {
         width: 30px;
         height: 30px;
-    }
-
-    .task-edit {
-        margin-right: 10px;
     }
 
     .task-item {
@@ -1378,7 +1431,7 @@ body.dark-mode .task-pick:hover {
 
 /* Dark Mode Specific Overrides */
 /* Teal text needs a lighter teal on the dark background */
-body.dark-mode .section-title .focus-counter,
+body.dark-mode .section-title .focus-counter strong,
 body.dark-mode .setting-value,
 body.dark-mode .btn-add {
     color: var(--primary-teal-light);

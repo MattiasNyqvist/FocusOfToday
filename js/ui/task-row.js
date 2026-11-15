@@ -1,12 +1,13 @@
 /**
  * Task row building blocks
- * Pieces shared by the Today, Backlog and Archive lists: icon buttons,
+ * Pieces shared by the Today, Later and Done lists: icon buttons, the "..." menu,
  * the swipe frame around a row, and inline editing of a task's text.
  */
 
 import { icon } from './icons.js';
 import { MAX_TASK_LENGTH } from '../config.js';
 import { editTaskText, deleteTask } from '../actions.js';
+import { createMenuButton } from './row-menu.js';
 
 /**
  * A round icon button inside a task row.
@@ -39,21 +40,23 @@ export function createTextElement(task) {
     return text;
 }
 
-/** Edit (pen) and delete (trash) buttons for a task in the given list. */
-export function createEditAndDeleteButtons(list, task, textElement) {
-    const editButton = createIconButton({
-        className: 'task-edit',
-        label: 'Edit task',
-        iconName: 'pen',
-        onClick: () => startInlineEdit(list, task, textElement, editButton)
+/**
+ * The "..." button of a row. Its menu holds the less common actions: any `extraItems`
+ * (for example "Move to Later"), then Edit and Delete.
+ * @param {string} list - The list the task is in
+ * @param {Object} task
+ * @param {HTMLElement} textElement - The task text, replaced by an input while editing
+ * @param {Array} [extraItems] - Menu items for this kind of row, shown first
+ */
+export function createRowMenu(list, task, textElement, extraItems = []) {
+    return createMenuButton({
+        label: 'More actions',
+        items: () => [
+            ...extraItems,
+            { action: 'edit', label: 'Edit', iconName: 'pen', onSelect: () => startInlineEdit(list, task, textElement) },
+            { action: 'delete', label: 'Delete', iconName: 'trash', danger: true, onSelect: () => deleteTask(list, task.id) }
+        ]
     });
-    const deleteButton = createIconButton({
-        className: 'task-delete',
-        label: 'Delete task',
-        iconName: 'trash',
-        onClick: () => deleteTask(list, task.id)
-    });
-    return [editButton, deleteButton];
 }
 
 /**
@@ -86,9 +89,9 @@ export function createSwipeFrame(row, labels) {
 
 /**
  * Edit a task's text in place.
- * Enter or clicking away saves, Escape cancels. The pen turns into a save icon while editing.
+ * Enter or clicking away saves, Escape cancels.
  */
-function startInlineEdit(list, task, textElement, editButton) {
+function startInlineEdit(list, task, textElement) {
     const originalText = task.text;
 
     const input = document.createElement('input');
@@ -100,7 +103,6 @@ function startInlineEdit(list, task, textElement, editButton) {
 
     textElement.style.display = 'none';
     textElement.before(input);
-    editButton.innerHTML = icon('disk', { size: 20 });
     input.focus();
     input.select();
 
@@ -111,7 +113,6 @@ function startInlineEdit(list, task, textElement, editButton) {
 
         input.remove();
         textElement.style.display = '';
-        editButton.innerHTML = icon('pen', { size: 20 });
 
         const newText = input.value.trim();
         if (save && newText && newText !== originalText) {

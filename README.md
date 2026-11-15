@@ -1,8 +1,8 @@
 # Focus of Today
 
 A minimalist task manager based on the Ivy Lee Method: choose what matters today, and finish it.
-Pick your top 6 tasks for the day (adjustable), number them in order of importance,
-and work through them one at a time. Everything is stored in the browser (localStorage);
+Write everything down (brain dump), then prioritise what should be done today: pick up to 6 tasks
+(adjustable) and rank them by importance. Everything is stored in the browser (localStorage);
 there is no server and no account.
 
 ## Running locally
@@ -24,8 +24,8 @@ There is no build step and there are no dependencies: edit a file and reload the
 - The idea: this is not a list of everything to do. It is a place to **choose what matters today**
   and finish it. Everything else waits.
 - **Today** has two parts. *Today's focus* is a fixed number of numbered places (max 6, adjustable),
-  and the free places are drawn as empty slots. The counter (`1/5 (max 6)`) is finished / chosen tasks
-  and the most you can choose. *Everything else* is where every task is written down first.
+  and the free places are drawn as empty slots. The counter (`1 of 5 done (max 6 tasks)`) is finished
+  and chosen tasks, and the most you can choose. *Everything else* is where every task is written down first.
 - **Focus** (the button on each task in *Everything else*) puts it in today's focus. If the focus is full, a dialog asks which task
   should give way (`swap-dialog.js`) instead of showing an error.
 - A task marked as done stays in today's focus, struck through, for the rest of the day.
@@ -33,11 +33,18 @@ There is no build step and there are no dependencies: edit a file and reload the
 - **Later** (the backlog) holds tasks that matter, but not today.
 - The first time the app is opened on a new day (also after a weekend), the **new-day review**
   asks what to do with focus tasks that are still open: keep them or move them to **Later**.
-- There is no tutorial or Help page. The screen explains itself (empty slots, "Pick a task", the swap
+- There is no tutorial or Help page. The screen explains itself (empty slots, the **+ Focus** button, the swap
   dialog), and a **?** next to the focus heading opens a short "How it works" dialog (also in Settings).
 - Quick capture sits in a bar above the navigation on Today, so a task can be added from anywhere
   on the screen.
-- Every swipe has a button too, so the app works with a mouse and without gestures.
+- Each row has one or two main buttons (check, **+ Focus**, or back to Today) and a **...** menu with
+  the rest (Move to Later, Edit, Delete). Swipes are kept for touch screens and every swipe except
+  reordering also has a button or a menu item, so the app works with a mouse too.
+- Gestures: swipe a task **left** to finish it (in *Everything else*: add it to the focus) and **right**
+  to send it to Later; in Later and Done swipe **left** to move it back to Today. Reordering is a swipe
+  up or down on touch, and a drag by the grip (the six dots) with a mouse.
+- Any task can be checked off, also one in *Everything else* (a quick phone call), without taking a place
+  in today's focus. Only focus tasks count in the counter (`1 of 2 done (max 6 tasks)`).
 
 The code still calls the lists `tasks`, `backlog` and `archive`; the screen calls them
 *Today*, *Later* and *Done*.
@@ -60,6 +67,7 @@ js/
     swap-dialog.js    Asks which focus task gives way when the focus is full.
     simple-lists.js   Later and Done views.
     task-row.js       Pieces shared by all rows: icon buttons, swipe frame, inline editing.
+    row-menu.js       The ... button of a row and the menu it opens.
     gestures.js       Swipe handling (touch). Every swipe also has a button on the row.
     reorder.js        Reordering: swipe up/down (touch) and drag and drop by the grip (mouse).
     help.js           The "How it works" dialog.

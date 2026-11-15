@@ -108,6 +108,7 @@ export function swapFocus(outId, inId) {
 /**
  * Mark a task as done, or as not done again.
  * A done task stays on the Today list for the rest of the day and moves to Done tomorrow.
+ * Any task can be finished, in today's focus or not; only focus tasks count towards the goal.
  * @param {number} id
  * @param {HTMLElement} [element] - The task row, used as the origin of the confetti
  */
@@ -123,13 +124,13 @@ export function toggleDone(id, element) {
     }
 
     storage.updateItem(LIST.TASKS, id, { status: 'done', completedAt: new Date().toISOString() });
-    if (element) showCelebration(element);
+    if (element && task.starred) showCelebration(element); // confetti only for focus tasks
     notifyDataChanged();
 
     const focusTasks = storage.loadTasks().filter(t => t.starred);
     const doneInFocus = focusTasks.filter(t => t.status === 'done').length;
     if (task.starred && doneInFocus === focusTasks.length) {
-        showToast(`🎉 ${doneInFocus}/${focusTasks.length} - all focus tasks done!`);
+        showToast(`🎉 All ${focusTasks.length} focus task${focusTasks.length === 1 ? '' : 's'} done!`);
     } else {
         showToast('✓ Task done');
     }
