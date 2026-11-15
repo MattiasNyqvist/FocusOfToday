@@ -19,7 +19,7 @@
     --primary-teal: #66b2b2;        /* Active buttons - medium teal */
     --primary-teal-dark: #008080;   /* Active menu items - classic teal */
     --primary-teal-light: #99cccc;  /* Light accents */
-    --tone-guide: #e8f3f3;          /* Guide box - a faint tint so it reads as its own area */
+    --tone-guide: #e8f3f3;          /* Guide card - a faint tint on a white background */
     --tone-focus: #cfe5e5;          /* Today's focus tasks - the strongest tint */
     --header-teal: #006666;         /* Header background - deep teal */
     --help-bg-teal: #b2d8d8;        /* Help section backgrounds */
@@ -177,16 +177,23 @@ body.dark-mode {
 
 /* Assistant Section (step-by-step helper) */
 .assistant-section {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 8px 16px 12px;
-    background: var(--tone-guide);
-    border-bottom: 1px solid var(--border-light);
+    padding: 10px 16px;
+    background: var(--bg-white);
     position: sticky;
     top: 0;
     z-index: 100;
-    }
+}
+
+/* The guide itself: a small card with a faint teal tint */
+.assistant-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 12px 10px;
+    background: var(--tone-guide);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+}
 
 .assistant-section.hidden {
     display: none;
@@ -587,9 +594,10 @@ body.dark-mode .section-title {
 /* Priority number in the focus list (replaces the star) */
 /* A star with the priority number inside */
 .priority-badge {
+    --star-size: 34px;
     position: relative;
-    width: 34px;
-    height: 34px;
+    width: var(--star-size);
+    height: var(--star-size);
     color: var(--primary-teal-dark);
     display: flex;
     align-items: center;
@@ -597,8 +605,14 @@ body.dark-mode .section-title {
 }
 
 .priority-badge svg {
-    width: 34px;
-    height: 34px;
+    width: var(--star-size);
+    height: var(--star-size);
+}
+
+/* The same star inside a sentence (guide texts) */
+.priority-badge-inline {
+    display: inline-flex;
+    vertical-align: middle;
 }
 
 /* The number sits on the star's centre, which is a little below the box centre */
@@ -609,7 +623,7 @@ body.dark-mode .section-title {
     transform: translate(-50%, -50%);
     color: var(--text-on-teal);
     font-weight: 700;
-    font-size: 13px;
+    font-size: calc(var(--star-size) * 0.38);
     line-height: 1;
 }
 

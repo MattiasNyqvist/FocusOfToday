@@ -10,10 +10,13 @@
 
 import { CONFIG, STORAGE_KEYS } from '../config.js';
 import { readPref, writePref } from '../storage.js';
-import { icon } from './icons.js';
+import { icon, numberedStar } from './icons.js';
 
 /** An icon sized to sit inside a sentence. */
 const inlineIcon = (name) => icon(name, { size: 18, inline: true });
+
+/** The numbered star of the priority list, sized to sit inside a sentence. */
+const inlineStar = (number) => numberedStar(number, { size: 24, inline: true });
 
 /**
  * The content of each view. A step is { title?, text } where text may contain HTML.
@@ -27,15 +30,15 @@ const STEPS = {
     focus: () => [
         {
             title: 'Brainstorm',
-            text: `Write down everything on your mind. Click ${inlineIcon('disk')} to save each task.`
+            text: `Write down everything on your mind for today's to-dos. Click ${inlineIcon('disk')} to save each task.`
         },
         {
             title: 'Prioritise',
-            text: `Click ${inlineIcon('star')} on your top tasks (max ${CONFIG.maxFocusTasks}). <strong>Drag</strong> to order them, number 1 first.`
+            text: `Click ${inlineIcon('star')} on your top tasks (max ${CONFIG.maxFocusTasks}). <strong>Drag</strong> to order them, with ${inlineStar(1)} on top.`
         },
         {
             title: 'Act',
-            text: `Start with number 1. Click ${inlineIcon('check')} when done (click again to undo). <strong>Swipe right</strong> for backlog.`
+            text: `Start with ${inlineStar(1)}. Click ${inlineIcon('check')} when done (click again to undo). <strong>Swipe right</strong> for backlog.`
         },
         {
             title: 'Tidy up',
