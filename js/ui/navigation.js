@@ -1,6 +1,6 @@
 /**
  * Navigation
- * Switching between Today, Backlog, Archive, Help and Settings.
+ * Switching between Today, Later, Done, Help and Settings.
  * Each view is a <div id="{name}View" class="view"> in index.html.
  */
 

@@ -50,7 +50,7 @@ export function deleteTask(list, id) {
 /**
  * Add a task to, or remove it from, today's focus.
  * New focus tasks go after the existing ones (they get the next priority number).
- * Removed ones go to the top of the other tasks.
+ * Removed ones go to the top of the brain dump.
  */
 export function toggleFocus(id) {
     const tasks = storage.loadTasks();
@@ -82,12 +82,32 @@ export function toggleFocus(id) {
 
     storage.saveTasks(tasks);
     notifyDataChanged();
-    showToast(addingToFocus ? '⭐ Added to Today\'s Focus' : '📋 Moved to Tasks');
+    showToast(addingToFocus ? '⭐ Added to today\'s focus' : '↩ Back in the brain dump');
+}
+
+/**
+ * Take a task out of today's focus and put another one in its place (same number).
+ * @param {number} outId - The focus task that leaves
+ * @param {number} inId - The brain dump task that takes its place
+ */
+export function swapFocus(outId, inId) {
+    const tasks = storage.loadTasks();
+    const outIndex = tasks.findIndex(task => task.id === outId);
+    const inIndex = tasks.findIndex(task => task.id === inId);
+    if (outIndex === -1 || inIndex === -1) return;
+
+    tasks[outIndex].starred = false;
+    tasks[inIndex].starred = true;
+    [tasks[outIndex], tasks[inIndex]] = [tasks[inIndex], tasks[outIndex]]; // the newcomer gets the old number
+
+    storage.saveTasks(tasks);
+    notifyDataChanged();
+    showToast('⇄ Swapped. The other task is back in the brain dump');
 }
 
 /**
  * Mark a task as done, or as not done again.
- * A done task stays on the Today list for the rest of the day and is archived tomorrow.
+ * A done task stays on the Today list for the rest of the day and moves to Done tomorrow.
  * @param {number} id
  * @param {HTMLElement} [element] - The task row, used as the origin of the confetti
  */
@@ -119,7 +139,7 @@ export function toggleDone(id, element) {
 export function sendToBacklog(id) {
     if (storage.moveToBacklog(id)) {
         notifyDataChanged();
-        showToast('📦 Moved to backlog');
+        showToast('📦 Moved to Later');
     }
 }
 
@@ -144,6 +164,6 @@ export function moveToBacklogMany(idsToBacklog) {
     if (idsToBacklog.length > 0) {
         notifyDataChanged();
         const n = idsToBacklog.length;
-        showToast(`📦 ${n} task${n === 1 ? '' : 's'} moved to backlog`);
+        showToast(`📦 ${n} task${n === 1 ? '' : 's'} moved to Later`);
     }
 }

@@ -568,10 +568,13 @@ body.dark-mode .modal::backdrop {
     background: var(--bg-white);
 }
 
-/* The "Add new task" section sits directly under the assistant box */
-.task-section-input {
-    padding-top: 0;
-    padding-bottom: 20px;
+/* The brain dump: the input first, then the tasks waiting to be picked */
+.task-section-braindump {
+    padding-bottom: 24px;
+}
+
+.task-section-braindump .task-input-container {
+    margin-bottom: 8px;
 }
 
 .focus-section {
@@ -746,6 +749,154 @@ body.dark-mode .section-title {
     accent-color: var(--primary-teal-dark);
     width: 18px;
     height: 18px;
+}
+
+/* The question under the "Today's focus" heading, until the first task is picked */
+.focus-prompt {
+    margin: -4px 16px 8px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--text-light);
+}
+
+/* A free place in today's focus: a dashed numbered star and "Pick a task" */
+.focus-slot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 16px 6px 7px;
+    border: none;
+    background: transparent;
+    color: var(--text-light);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    min-height: 48px;
+}
+
+.focus-slot:hover {
+    background: rgba(0, 128, 128, 0.08);
+}
+
+.focus-slot-text {
+    font-size: 15px;
+    font-style: italic;
+}
+
+.priority-badge-empty {
+    color: var(--primary-teal-dark);
+    opacity: 0.55;
+}
+
+.priority-badge-empty svg path {
+    stroke-dasharray: 2.5 2.5;
+}
+
+.priority-badge-empty .priority-number {
+    color: var(--primary-teal-dark);
+}
+
+body.dark-mode .priority-badge-empty {
+    color: var(--primary-teal-light);
+    opacity: 0.6;
+}
+
+body.dark-mode .priority-badge-empty .priority-number {
+    color: var(--primary-teal-light);
+}
+
+/* "Pick" button on a brain dump row, and the same look inside the guide text */
+.task-pick,
+.pick-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border: 1px solid var(--primary-teal-dark);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--primary-teal-dark);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.task-pick {
+    flex-shrink: 0;
+    margin-left: 4px;
+    cursor: pointer;
+    min-height: 32px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.task-pick:hover {
+    background: var(--primary-teal-dark);
+    color: var(--text-on-teal);
+}
+
+.task-pick svg {
+    stroke: currentColor;
+}
+
+body.dark-mode .task-pick,
+body.dark-mode .pick-chip {
+    border-color: var(--primary-teal-light);
+    color: var(--primary-teal-light);
+}
+
+body.dark-mode .task-pick:hover {
+    background: var(--primary-teal-light);
+    color: var(--bg-gray);
+}
+
+/* The swap dialog: one button per focus task */
+.swap-list {
+    list-style: none;
+    margin: 0 0 16px 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.swap-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    background: var(--bg-white);
+    color: var(--text-dark);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.swap-option:hover {
+    border-color: var(--primary-teal-dark);
+    background: rgba(0, 128, 128, 0.08);
+}
+
+.swap-option span:last-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.swap-option-number {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary-teal-dark);
+    color: var(--text-on-teal);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .task-text {

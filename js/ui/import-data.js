@@ -17,8 +17,8 @@ const count = (n) => `${n} task${n === 1 ? '' : 's'}`;
 function confirmReplace(backup) {
     const dialog = document.getElementById('importDialog');
     document.getElementById('importText').textContent =
-        `The backup has ${count(backup.tasks.length)} on Today, ${count(backup.backlog.length)} in the backlog ` +
-        `and ${count(backup.archive.length)} in the archive. All your current data will be replaced. ` +
+        `The backup has ${count(backup.tasks.length)} on Today, ${count(backup.backlog.length)} in Later ` +
+        `and ${count(backup.archive.length)} in Done. All your current data will be replaced. ` +
         'This cannot be undone.';
 
     return new Promise(resolve => {

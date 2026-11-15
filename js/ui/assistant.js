@@ -1,6 +1,6 @@
 /**
  * Assistant
- * The step-by-step help box at the top of Today, Backlog and Archive.
+ * The step-by-step help box at the top of Today, Later and Done.
  * Today has several steps the user can page through with < and >;
  * the other views have a single message.
  *
@@ -14,6 +14,9 @@ import { icon, numberedStar } from './icons.js';
 
 /** An icon sized to sit inside a sentence. */
 const inlineIcon = (name) => icon(name, { size: 18, inline: true });
+
+/** The Pick button, as it looks on the brain dump rows. */
+const pickChip = '<span class="pick-chip">Pick</span>';
 
 /** The six-dot drag handle, as it looks on the task rows. */
 const gripIcon = icon('grip', { size: 18, strokeWidth: 3, inline: true });
@@ -32,28 +35,28 @@ const inlineStar = (number) => numberedStar(number, { size: 24, inline: true });
 const STEPS = {
     focus: () => [
         {
-            title: 'Brainstorm',
+            title: 'Brain dump',
             text: `Write down everything on your mind for today's to-dos. Click ${inlineIcon('plus')} to add each task.`
         },
         {
-            title: 'Prioritise',
-            text: `Click ${inlineIcon('star')} on your top tasks (max ${CONFIG.maxFocusTasks}). Drag ${gripIcon} to order them, with ${inlineStar(1)} on top.`
+            title: 'Pick',
+            text: `Click ${pickChip} on what matters most (max ${CONFIG.maxFocusTasks}). Drag ${gripIcon} to order them, with ${inlineStar(1)} on top.`
         },
         {
             title: 'Act',
             text: `Start with ${inlineStar(1)}. Click ${inlineIcon('check')} when done (click again to undo).`
         },
         {
-            title: 'Tidy up',
-            text: `Not today? Click ${inlineIcon('box')} or <strong>swipe right</strong> to send a task to the backlog. ${inlineIcon('pen')} edits, ${inlineIcon('trash')} deletes.`
+            title: 'Later',
+            text: `Not today? Click ${inlineIcon('box')} or <strong>swipe right</strong> to send a task to Later. ${inlineIcon('pen')} edits, ${inlineIcon('trash')} deletes.`
         },
         {
             title: 'Next day',
-            text: 'Done tasks move to the Archive tomorrow. Unfinished focus tasks are reviewed then.'
+            text: 'Finished tasks move to Done tomorrow. Unfinished focus tasks are reviewed then.'
         }
     ],
     backlog: () => [{
-        text: `Tasks for later. Click ${inlineIcon('arrowLeft')} or <strong>swipe left</strong> to move one back to Today. Click ${inlineIcon('pen')} to edit or ${inlineIcon('trash')} to delete.`
+        text: `Tasks that matter, but not today. Click ${inlineIcon('arrowLeft')} or <strong>swipe left</strong> to move one back to Today. Click ${inlineIcon('pen')} to edit or ${inlineIcon('trash')} to delete.`
     }],
     archive: () => [{
         text: `Finished tasks arrive here the day after. Click ${inlineIcon('arrowLeft')} or <strong>swipe left</strong> to move one back to Today. ${inlineIcon('pen')} edits, ${inlineIcon('trash')} deletes.`

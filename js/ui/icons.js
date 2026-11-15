@@ -102,14 +102,15 @@ export function icon(name, { size = 24, strokeWidth = 1.5, filled = false, inlin
  * @param {Object} [options]
  * @param {number} [options.size=34] - Width and height in px
  * @param {boolean} [options.done=false] - Faded star (a finished task)
+ * @param {boolean} [options.empty=false] - Dashed outline: a free place in today's focus
  * @param {boolean} [options.inline=false] - Align with surrounding text
  * @returns {string} HTML markup
  */
-export function numberedStar(content, { size = 34, done = false, inline = false } = {}) {
-    const classes = ['priority-badge', done && 'priority-badge-done', inline && 'priority-badge-inline']
+export function numberedStar(content, { size = 34, done = false, empty = false, inline = false } = {}) {
+    const classes = ['priority-badge', done && 'priority-badge-done', empty && 'priority-badge-empty', inline && 'priority-badge-inline']
         .filter(Boolean).join(' ');
     return `<span class="${classes}" style="--star-size: ${size}px" aria-hidden="true">`
-        + icon('star', { size, strokeWidth: 1, filled: true })
+        + icon('star', { size, strokeWidth: empty ? 1.5 : 1, filled: !empty })
         + `<span class="priority-number">${content}</span></span>`;
 }
 

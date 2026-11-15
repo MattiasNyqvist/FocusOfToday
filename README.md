@@ -1,6 +1,6 @@
 # Focus of Today
 
-A minimalist task manager based on the Ivy Lee Method: brainstorm, prioritise, act.
+A minimalist task manager based on the Ivy Lee Method: choose what matters today, and finish it.
 Pick your top 6 tasks for the day (adjustable), number them in order of importance,
 and work through them one at a time. Everything is stored in the browser (localStorage);
 there is no server and no account.
@@ -21,13 +21,23 @@ There is no build step and there are no dependencies: edit a file and reload the
 
 ## How it works
 
-- **Today** has two lists: *Today's Focus Tasks* (numbered, max 6) and *Other tasks*.
-  The counter next to the heading (`2/6`) is finished focus tasks / daily goal.
-- A task marked as done stays on the Today list, struck through, for the rest of the day.
-  It moves to the **Archive** the next day.
+- The idea: this is not a list of everything to do. It is a place to **choose what matters today**
+  and finish it. Everything else waits.
+- **Today** has two parts. *Today's focus* is a fixed number of numbered places (max 6, adjustable),
+  and the free places are drawn as empty slots. The counter (`1/5 (max 6)`) is finished / chosen tasks
+  and the most you can choose. *Brain dump* is where every task is written down first.
+- **Pick** puts a brain dump task in today's focus. If the focus is full, a dialog asks which task
+  should give way (`swap-dialog.js`) instead of showing an error.
+- A task marked as done stays in today's focus, struck through, for the rest of the day.
+  It moves to **Done** (the archive) the next day.
+- **Later** (the backlog) holds tasks that matter, but not today.
 - The first time the app is opened on a new day (also after a weekend), the **new-day review**
-  asks what to do with focus tasks that are still open: keep them or move them to the **Backlog**.
-- The **assistant** at the top of Today, Backlog and Archive explains the method step by step.
+  asks what to do with focus tasks that are still open: keep them or move them to **Later**.
+- The **assistant** at the top of Today, Later and Done explains the method step by step.
+- Every swipe has a button too, so the app works with a mouse and without gestures.
+
+The code still calls the lists `tasks`, `backlog` and `archive`; the screen calls them
+*Today*, *Later* and *Done*.
 
 ## Project structure
 
@@ -43,8 +53,9 @@ js/
   events.js           "Data changed" notification, so actions never depend on rendering code.
   ui/
     render.js         Redraws all lists.
-    task-list.js      Today view (focus list + other tasks).
-    simple-lists.js   Backlog and Archive views.
+    task-list.js      Today view (focus slots + brain dump).
+    swap-dialog.js    Asks which focus task gives way when the focus is full.
+    simple-lists.js   Later and Done views.
     task-row.js       Pieces shared by all rows: icon buttons, swipe frame, inline editing.
     gestures.js       Swipe handling (touch). Every swipe also has a button on the row.
     reorder.js        Reordering: swipe up/down (touch) and drag and drop by the grip (mouse).

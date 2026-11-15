@@ -1,5 +1,5 @@
 /**
- * Backlog and Archive views
+ * Later (backlog) and Done (archive) views
  * Both lists look alike: a row with the task text and buttons to move it back to
  * Today, edit it or delete it. Swiping a row to the left also moves it back to Today.
  */
@@ -12,7 +12,7 @@ import { createIconButton, createTextElement, createEditAndDeleteButtons, create
 
 export function renderBacklog() {
     const emptyContent = document.createElement('span');
-    emptyContent.innerHTML = icon('box', { inline: true }) + ' Nothing parked for later.';
+    emptyContent.innerHTML = icon('box', { inline: true }) + ' Nothing here. Tasks that can wait go here.';
 
     renderSimpleList({
         containerId: 'backlogList',
@@ -32,7 +32,7 @@ export function renderArchive() {
         list: LIST.ARCHIVE,
         tasks,
         rowClass: 'archive-task-item',
-        emptyContent: 'No completed tasks archived yet.',
+        emptyContent: 'Nothing done yet. Finished tasks arrive here the day after.',
         createLeading: (task) => {
             const date = document.createElement('div');
             date.className = 'archive-date';
@@ -83,7 +83,7 @@ function renderSimpleList({ containerId, list, tasks, rowClass, emptyContent, cr
             ...createEditAndDeleteButtons(list, task, text)
         );
 
-        const { wrapper, labelLeft } = createSwipeFrame(row, { left: 'Move to today' });
+        const { wrapper, labelLeft } = createSwipeFrame(row, { left: 'Move to Today' });
         attachSwipe(row, {
             labelLeft,
             onSwipeLeft: () => slideOut(row, 'left', () => returnToToday(list, task.id))

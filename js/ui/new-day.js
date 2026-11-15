@@ -60,7 +60,7 @@ function showDialog(dialog, tasks, lastSeen) {
 
     dialog.querySelector('#newDayText').textContent =
         `${count} focus task${plural ? ' is' : 's are'} still open from your last visit (${lastVisit}). ` +
-        `Keep ${plural ? 'it' : 'them'} in today's focus, or move ${plural ? 'it' : 'them'} to the backlog?`;
+        `Keep ${plural ? 'it' : 'them'} in today's focus, or move ${plural ? 'it' : 'them'} to Later?`;
 
     const list = dialog.querySelector('#newDayList');
     list.replaceChildren(...tasks.map(task => createChoice(task)));
@@ -91,7 +91,7 @@ function createChoice(task) {
     const hint = document.createElement('small');
     hint.textContent = 'Keep in focus';
     checkbox.addEventListener('change', () => {
-        hint.textContent = checkbox.checked ? 'Keep in focus' : 'Move to backlog';
+        hint.textContent = checkbox.checked ? 'Keep in focus' : 'Move to Later';
     });
 
     label.append(checkbox, text, hint);
