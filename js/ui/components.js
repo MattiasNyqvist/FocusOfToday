@@ -2,7 +2,7 @@
  * Components
  * Some pieces of markup are used in several views: the header and the assistant box.
  * They are written once as <template> elements in index.html. Wherever a view has
- *     <div data-component="header" data-subtitle="Today"></div>
+ *     <div data-component="header" data-subtitle="Backlog"></div>
  *     <div data-component="assistant"></div>
  * this module puts a copy of the matching template in its place.
  */
